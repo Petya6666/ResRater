@@ -53,7 +53,7 @@ app.get('/etterem', (req, res) => {
 
 
 
-//(teszt célokra) felhasználók lekérése
+//felhasználói regisztráció
 app.post('/register', async (req, res) => {
     const { felhasznev, email, jelszo } = req.body;
 
@@ -89,7 +89,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-
+//(teszt célokra) felhasználók lekérése
 app.get('/users', (req, res) => {
     const sql = "SELECT felhasznalo_id, felhasznev FROM felhasznalok;";
     db.query(sql, (err, result) => {
@@ -102,19 +102,7 @@ app.get('/users', (req, res) => {
 });
 
 
-// CREATE (POST): Új felhasználó hozzáadása (még nem működik)
-/*app.post('/addusers', async (req, res) => {
-    try {
-        const { name, email } = req.body;
-        const sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-        const [result] = await dbPool.query(sql, [name, email]);
-        res.status(201).json({ message: "Felhasználó sikeresen hozzáadva", id: result.insertId });
-    } catch (error) {
-        console.error("Hiba a beszúrás során: ", error);
-        res.status(500).json({ error: 'Adatbázis hiba történt a beszúráskor.' });
-    }
-});
-*/
+
 
 
 // UPDATE (PATCH): Felhasználó adatainak módosítása ID alapján (még nem működik)
