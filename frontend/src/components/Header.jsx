@@ -1,6 +1,8 @@
 import React from 'react';
 import '../styles/Header.css'; 
-
+import { Link } from 'react-router-dom';
+import Home from '../pages/Home.jsx';
+import Restaurants from '../pages/Restaurants.jsx';
 
 const Header = () => {
     return (
@@ -10,7 +12,7 @@ const Header = () => {
             <img src="/logo.png" alt="Logo" className="logo" />
                 <ul className="navbar-menu">
                     <li className="navbar-item">
-                        <a href="/Home" className="navbar-link">Home</a>
+                        <a href="/pages/Home.jsx" className="navbar-link">Home</a>
                     </li>
                     <li className="navbar-item">
                         <a href="/restaurants" className="navbar-link">Éttermek</a>
