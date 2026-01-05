@@ -32,6 +32,19 @@ app.get('/', (req, res) => {
         })
 });
 
+//(teszt célokra) összes felhasználó lekérése
+app.get('/users', (req, res) => {
+    const sql = "SELECT felhasznalo_id, felhasznev FROM felhasznalok;";
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error("Hiba a lekérdezés során: ", err);
+            return res.status(500).json({ error: 'Adatbázis hiba történt a lekérdezéskor.' });
+        }
+        res.json(result);
+    });
+});
+
+
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
@@ -43,11 +56,18 @@ app.get('/browserettermek', (req, res) => {
 });
 
 //egy adott étterem minden adatának lekérése
-app.get('/etterem', (req, res) => {
-    const sql = 'SELECT * FROM ettermek';
-    db.query(sql, (err, result) => {
-        if (err) return res.json(err); 
-        return res.json(result) 
+app.get('/etterem/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = 'SELECT * FROM ettermek WHERE etterem_id = ?';
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json(err);
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Etterem not found' });
+        }
+
+        return res.json(result[0]); 
     });
 });
 
@@ -88,65 +108,6 @@ app.post('/register', async (req, res) => {
         res.status(500).json({ error: 'Szerver hiba történt.' });
     }
 });
-
-//(teszt célokra) felhasználók lekérése
-app.get('/users', (req, res) => {
-    const sql = "SELECT felhasznalo_id, felhasznev FROM felhasznalok;";
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error("Hiba a lekérdezés során: ", err);
-            return res.status(500).json({ error: 'Adatbázis hiba történt a lekérdezéskor.' });
-        }
-        res.json(result);
-    });
-});
-
-
-
-
-
-// UPDATE (PATCH): Felhasználó adatainak módosítása ID alapján (még nem működik)
-/*app.patch('/api/users/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, email } = req.body;
-
-        if (!name || !email) {
-            return res.status(400).json({ error: 'A név és az email mező kitöltése kötelező a módosításhoz.' });
-        }
-
-        const sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
-        const [result] = await dbPool.query(sql, [name, email, id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'A felhasználó nem található.' });
-        }
-        res.json({ message: "Felhasználó sikeresen módosítva", id: id });
-    } catch (error) {
-        console.error("Hiba a módosítás során: ", error);
-        res.status(500).json({ error: 'Adatbázis hiba történt a módosításkor.' });
-    }
-});
-*/
-
-// DELETE (DELETE): Felhasználó törlése ID alapján (még nem működik)
-/*app.delete('/api/users/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const sql = "DELETE FROM users WHERE id = ?";
-        const [result] = await dbPool.query(sql, [id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'A felhasználó nem található.' });
-        }
-        res.json({ message: "Felhasználó sikeresen törölve", id: id });
-    } catch (error) {
-        console.error("Hiba a törlés során: ", error);
-        res.status(500).json({ error: 'Adatbázis hiba történt a törléskor.' });
-    }
-});
-*/
-
 
 
 
