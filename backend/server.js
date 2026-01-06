@@ -110,6 +110,68 @@ app.post('/register', async (req, res) => {
 });
 
 
+app.patch('/users/:id/username', (req, res) => {
+    const { id } = req.params;
+    const { felhasznev } = req.body;
+
+    if (!felhasznev) {
+        return res.status(400).json({ error: 'Felhasználónév kötelező!' });
+    }
+
+    const sql = 'UPDATE felhasznalok SET felhasznev = ? WHERE felhasznalo_id = ?';
+
+    db.query(sql, [felhasznev, id], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Adatbázis hiba.' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Felhasználó nem található.' });
+        }
+
+        res.json({ message: 'Felhasználónév sikeresen frissítve.' });
+    });
+});
+
+
+app.patch('/users/:id/password', async (req, res) => {
+    const { id } = req.params;
+    const { regiJelszo, ujJelszo } = req.body;
+
+    if (!regiJelszo || !ujJelszo) {
+        return res.status(400).json({ error: 'Minden mezőt ki kell tölteni!' });
+    }
+
+    const getUserSql = 'SELECT jelszo FROM felhasznalok WHERE felhasznalo_id = ?';
+
+    db.query(getUserSql, [id], async (err, result) => {
+        if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
+
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Felhasználó nem található.' });
+        }
+
+        const storedHash = result[0].jelszo;
+        const match = await bcrypt.compare(regiJelszo, storedHash);
+
+        if (!match) {
+            return res.status(401).json({ error: 'Hibás régi jelszó.' });
+        }
+
+        const newHashedPassword = await bcrypt.hash(ujJelszo, 10);
+        const updateSql = 'UPDATE felhasznalok SET jelszo = ? WHERE felhasznalo_id = ?';
+
+        db.query(updateSql, [newHashedPassword, id], (err) => {
+            if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
+
+            res.json({ message: 'Jelszó sikeresen megváltoztatva.' });
+        });
+    });
+});
+
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
