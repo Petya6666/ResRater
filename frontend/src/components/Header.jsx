@@ -1,8 +1,6 @@
 import React from 'react';
 import '../styles/Header.css'; 
-import { Link } from 'react-router-dom';
-import Home from '../pages/Home.jsx';
-import Restaurants from '../pages/Restaurants.jsx';
+
 
 const Header = () => {
     return (

@@ -1,12 +1,18 @@
 import React from 'react'
 import Header from '../components/Header.jsx'
+import '../styles/index.css';
 
 const Home = () => {
     return (
     <>
       <Header />
-      
-        <h1>Welcome to ResRater</h1>
+        <br />
+
+        <div className='doboz'>
+        <h1>Üdvözöljük a ResRater alkalmazásban!</h1>
+        <br />
+        <p>Fedezze fel a legjobb éttermeket, olvassa el a véleményeket, és ossza meg saját tapasztalatait másokkal!</p> 
+        </div>
     </>
     )
 }
