@@ -1,14 +1,14 @@
 body{
-    background-color: #fcfcff;
+    background-image: url();
 }
 .doboz{ 
     
     border-radius: 10px;
     height: auto;
     width: 1000px;
-    margin: 70px auto;
-    text-align: center;
-    padding: 100px;
+    margin: 70px 20px;
+    text-align: unset;
+    padding: 80px;
     color: white;
     background-color: #7a1919;
     font-family: 'Dela Gothic One', sans-serif;
