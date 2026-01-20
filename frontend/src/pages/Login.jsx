@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Header from '../components/Header.jsx';
 import '../styles/index.css';
 
@@ -17,22 +18,22 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
-            const response = await fetch('/register', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:3000/register', formData, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
             });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message);
+            if (response.status === 200) {
+                alert(response.data.message);
+                setFormData({
+                    felhasznev: '',
+                    email: '',
+                    jelszo: ''
+                });
             } else {
-                alert(data.error);
+                alert(response.data.error);
             }
         } catch (error) {
             console.error('Hiba történt:', error);
@@ -41,47 +42,29 @@ const Login = () => {
     };
 
     return (
-        <>
+        <div>
             <Header />
             <div className='login-doboz'>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="felhasznev">Felhasználónév:</label>
-                        <input
-                            type="text"
-                            id="felhasznev"
-                            name="felhasznev"
-                            value={formData.felhasznev}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="jelszo">Jelszó:</label>
-                        <input
-                            type="password"
-                            id="jelszo"
-                            name="jelszo"
-                            value={formData.jelszo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit">Regisztráció</button>
-                </form>
+                <h2>Bejelentkezés</h2>
+                <div>
+                    {Object.keys(formData).map((key) => (
+                        <div key={key}>
+                            <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+                            <input
+                                type={key === 'email' ? 'email' : key === 'jelszo' ? 'password' : 'text'}
+                                id={key}
+                                name={key}
+                                value={formData[key]}
+                                onChange={handleChange}
+                                placeholder={key}
+                                required
+                            />
+                        </div>
+                    ))}
+                    <button onClick={handleSubmit}>Regisztráció</button>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 
