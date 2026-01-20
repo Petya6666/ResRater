@@ -2,7 +2,7 @@ import React from 'react'
 import Header from '../components/Header.jsx'
 import '../styles/index.css';
 
-const Home = () => {
+function Home(){
     return (
     <>
       <Header />

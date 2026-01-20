@@ -6,6 +6,9 @@ const Restaurants = () => {
     <>
       <Header />
       
+      <br />
+      <br />
+      <br />
         <h1>Éttermek</h1>
     </>
     )
