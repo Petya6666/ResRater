@@ -87,10 +87,8 @@ app.post('/register', async (req, res) => {
     }
 
     try {
-        // Jelszó titkosítása
         const hashedPassword = await bcrypt.hash(jelszo, 10);
 
-        // Az adatbázis automatikusan beállítja a "felhasznalo" szerepet
         const sql = `
             INSERT INTO felhasznalok (felhasznev, email, jelszo)
             VALUES (?, ?, ?)
@@ -175,41 +173,6 @@ app.patch('/users/:id/password', async (req, res) => {
     });
 });
 
-/* 
-
-app.patch('/users/me/password', authenticateToken, async (req, res) => {
-    const userId = req.user.id; // JWT-ből
-    const { regiJelszo, ujJelszo } = req.body;
-
-    if (!regiJelszo || !ujJelszo) {
-        return res.status(400).json({ error: 'Minden mezőt ki kell tölteni!' });
-    }
-
-    const getUserSql = 'SELECT jelszo FROM felhasznalok WHERE felhasznalo_id = ?';
-
-    db.query(getUserSql, [userId], async (err, result) => {
-        if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
-
-        const storedHash = result[0].jelszo;
-        const match = await bcrypt.compare(regiJelszo, storedHash);
-
-        if (!match) {
-            return res.status(401).json({ error: 'Hibás régi jelszó.' });
-        }
-
-        const newHashedPassword = await bcrypt.hash(ujJelszo, 10);
-        const updateSql = 'UPDATE felhasznalok SET jelszo = ? WHERE felhasznalo_id = ?';
-
-        db.query(updateSql, [newHashedPassword, userId], (err) => {
-            if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
-
-            res.json({ message: 'Jelszó sikeresen megváltoztatva.' });
-        });
-    });
-});
-
-
-*/
 
 
 
