@@ -1,13 +1,11 @@
-body{
-    background-image: url();
-}
+
 .doboz{ 
     
     border-radius: 10px;
     height: auto;
     width: 1000px;
-    margin: 70px 20px;
-    text-align: unset;
+    margin: 70px auto;
+    text-align: center;
     padding: 80px;
     color: white;
     background-color: #7a1919;
@@ -24,4 +22,24 @@ body{
     color: white;
     background-color: #7a1919;
     font-family: 'Dela Gothic One', sans-serif;
+}
+.bejelentkezes-gomb{
+    background-color: #ffffff;
+    color: #7a1919;
+    font-weight: bold;
+    margin: 20px;
+    border: none;
+    padding: 10px 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Dela Gothic One', sans-serif;
+}
+.input-field {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
 }

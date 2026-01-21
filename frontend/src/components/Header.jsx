@@ -25,7 +25,7 @@ const Header = () => {
                     <Nav.Link className='colors' href="/restaurants">Restaurants</Nav.Link>
                 </Nav>
                 <Navbar.Brand className='loginpic'>
-                    <Link to="/login">
+                    <Link to="/register">
                         <img
                             src="/loginpic.png"
                             width="auto"
