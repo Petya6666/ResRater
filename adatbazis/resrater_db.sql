@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Jan 21. 09:03
+-- Létrehozás ideje: 2026. Jan 22. 12:48
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -33,7 +33,7 @@ CREATE TABLE `ertekelesek` (
   `ertekeles_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
   `felhasznalo_id` int(11) NOT NULL,
-  `pontszam` tinyint(4) NOT NULL,
+  `atlag` tinyint(4) NOT NULL,
   `megjegyzes` text NOT NULL,
   `datum` datetime NOT NULL,
   `etelminoseg` int(5) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `ertekelesek` (
 -- A tábla adatainak kiíratása `ertekelesek`
 --
 
-INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `pontszam`, `megjegyzes`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
+INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atlag`, `megjegyzes`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
 (1, 1, 3, 5, 'Kiváló ízek és barátságos kiszolgálás.', '2025-11-01 12:00:00', 1, 1, 1),
 (2, 2, 7, 2, 'Túl sokat kellett várni, de az étel finom volt.', '2025-11-02 13:00:00', 2, 2, 2),
 (3, 3, 5, 4, 'Hangulatos hely, visszatérünk még.', '2025-11-03 14:00:00', 3, 3, 3),
@@ -120,7 +120,9 @@ INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `
 (9, 'molnarnora', '901234', 'nora.molnar@example.', '2025-09-03', 'felhasznalo'),
 (10, 'szilagyizoltan', '123789', 'zoltan.szilagyi@exam', '2025-10-22', 'admin'),
 (11, 'pisti123', '0', 'pisti@example.com', '2025-11-13', 'felhasznalo'),
-(12, 'jani', '0', 'pisti@example.com', '2025-11-13', 'felhasznalo');
+(12, 'jani', '0', 'pisti@example.com', '2025-11-13', 'felhasznalo'),
+(13, 'asasaaf', '$2b$10$ddXFuO/dH0GL1BXV6URaJuBw.Oi.0dw/YhKrejpb92f', 'bahfbaf@nasdja.hu', '2026-01-21', 'felhasznalo'),
+(14, 'ahahadb', '$2b$10$Qf2kEnZEet341Xy.aGxsW.LN8VHetj//AYb2EOa2aGY', 'jka@example.com', '2026-01-21', 'felhasznalo');
 
 -- --------------------------------------------------------
 
@@ -135,6 +137,13 @@ CREATE TABLE `kepek` (
   `leiras` varchar(100) NOT NULL,
   `feltoltes_datum` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `kepek`
+--
+
+INSERT INTO `kepek` (`kep_id`, `etterem_id`, `url`, `leiras`, `feltoltes_datum`) VALUES
+(1, 10, 'https://tse3.mm.bing.net/th/id/OIP.S0Ih7cACnm3f0Jv5YJ2oaQHaGY?rs=1&pid=ImgDetMain&o=7&rm=3', 'ez egy kfc', '2026-01-22 12:44:39');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -175,7 +184,7 @@ ALTER TABLE `kepek`
 -- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
-  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Megkötések a kiírt táblákhoz
