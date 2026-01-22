@@ -43,11 +43,13 @@
     box-sizing: border-box;
 }
 
+
 .kartya {
     width: 18rem;
     border-radius: 10px;
     font-family: 'Dela Gothic One', sans-serif;
-    background-color: #7a1919; 
+    background-color: #7a1919;
+    overflow: hidden; 
 }
 .card-container {
     display: flex;
@@ -62,5 +64,4 @@
 .kep {
     height: 200px;
     object-fit: cover;
-    border-radius: 10px 10px 0 0;
 }

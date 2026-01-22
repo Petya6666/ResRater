@@ -27,8 +27,8 @@ const Header = () => {
                     </Link>
                 </Navbar.Brand>
                 <Nav className="me-auto">
-                    <Nav.Link className='colors' href="/">Home</Nav.Link>
-                    <Nav.Link className='colors' href="/restaurants">Restaurants</Nav.Link>
+                    <Nav.Link className='colors' href="/">Kezdőlap</Nav.Link>
+                    <Nav.Link className='colors' href="/restaurants">Éttermek</Nav.Link>
                 </Nav>
                 <Navbar.Brand className='loginpic' onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
                     <img
@@ -50,3 +50,4 @@ const Header = () => {
 };
 
 export default Header;
+

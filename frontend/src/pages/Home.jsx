@@ -10,7 +10,7 @@ function Home(){
       <br />
 
       <div className='doboz'>
-      <h1>Üdvözöljük a ResRater alkalmazásban!</h1>
+      <h1>Üdvözöljük a ResRater oldalán!</h1>
       <br />
       <p>Fedezze fel a legjobb éttermeket, olvassa el a véleményeket, és ossza meg saját tapasztalatait másokkal!</p> 
       <br />
