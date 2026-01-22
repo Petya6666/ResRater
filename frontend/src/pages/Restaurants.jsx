@@ -1,17 +1,43 @@
 import React from 'react'
 import Header from '../components/Header.jsx'
+import { useState, useEffect } from 'react';    
+import axios from 'axios';
+import '../styles/index.css';
 
 const Restaurants = () => {
-    return (
+ const [ettermek,setettermek]=useState([]);
+
+ useEffect(() => {
+  const fetchAllEttermek = async () => {
+    try {
+      const result = await axios.get('http://localhost:3000/browserettermek');
+      setettermek(result.data);
+    } catch (error) {
+      console.error('Hiba az éttermek lekérése során:', error);
+    }
+  };
+
+  fetchAllEttermek();
+}, []);
+  return (
     <>
       <Header />
-      
-      <br />
-      <br />
-      <br />
-        <h1>Éttermek</h1>
+      <div className='container mt-4'>
+        <div className='row'>
+          {ettermek.map((etterem) => (
+            <div key={etterem.nev} className='col-md-4 mb-4'>
+              <div className='card'>
+                <div className='card-body'>
+                  <h5 className='card-title'>{etterem.nev}</h5>
+                  <p className='card-text'>Város: {etterem.varos}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
-    )
+  )
 }
 
 export default Restaurants;

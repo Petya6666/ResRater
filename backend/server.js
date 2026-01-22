@@ -53,7 +53,7 @@ app.get('/users', (req, res) => {
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
-    const sql = 'SELECT ettermek.nev, ettermek.varos, ettermek.kategoria ,ettermek.atlag_ertekeles FROM ettermek;';
+    const sql = 'SELECT ettermek.nev, ettermek.varos, ettermek.kategoria FROM ettermek;';
     db.query(sql, (err, result) => {
         if (err) return res.json(err); 
         return res.json(result)
