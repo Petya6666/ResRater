@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
@@ -7,6 +7,12 @@ import '../styles/Header.css';
 import Navbar from 'react-bootstrap/Navbar';
 
 const Header = () => {
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    const toggleDropdown = () => {
+        setShowDropdown(!showDropdown);
+    };
+
     return (
         <Navbar className='navbar-custom'>
             <Container>
@@ -24,15 +30,19 @@ const Header = () => {
                     <Nav.Link className='colors' href="/">Home</Nav.Link>
                     <Nav.Link className='colors' href="/restaurants">Restaurants</Nav.Link>
                 </Nav>
-                <Navbar.Brand className='loginpic'>
-                    <Link to="/register">
-                        <img
-                            src="/loginpic.png"
-                            width="auto"
-                            height="80"
-                            className="loginpic"
-                        />
-                    </Link>
+                <Navbar.Brand className='loginpic' onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
+                    <img
+                        src="/loginpic.png"
+                        width="auto"
+                        height="80"
+                        className="loginpic"
+                    />
+                    {showDropdown && (
+                        <div className="dropdown-menu">
+                            <Link to="/register" className="dropdown-item">Regisztráció</Link>
+                           
+                        </div>
+                    )}
                 </Navbar.Brand>
             </Container>
         </Navbar>

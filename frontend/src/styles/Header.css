@@ -29,3 +29,33 @@
     cursor: pointer;
 
 }
+
+
+.dropdown-menu {
+    color: white;
+    position: absolute;
+    top: 100%;
+    
+    background-color: #7a1919;
+   
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+/* Adjusted dropdown item text color */
+.dropdown-item {
+    padding: 10px;
+    color: white; /* Changed text color to white */
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #7a1919;
+    color: white;
+}
