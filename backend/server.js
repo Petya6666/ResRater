@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const app = express();
 const port = 3000;
 const mysql = require('mysql2');
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = 'very_secret_key'; // move to .env later
 const cors = require('cors');
 
 app.use(cors());
@@ -174,6 +176,81 @@ app.patch('/users/:id/password', async (req, res) => {
 });
 
 
+app.post('/login', (req, res) => {
+    const { email, jelszo } = req.body;
+
+    if (!email || !jelszo) {
+        return res.status(400).json({ error: 'Minden mezőt ki kell tölteni!' });
+    }
+
+    const sql = 'SELECT felhasznalo_id, felhasznev, jelszo FROM felhasznalok WHERE email = ?';
+
+    db.query(sql, [email], async (err, result) => {
+        if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
+    
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Hibás email vagy jelszó.' });
+        }
+    
+        try {
+
+            const user = result[0];
+            const match = await bcrypt.compare(jelszo, user.jelszo);
+    
+            if (!match) {
+                return res.status(401).json({ error: 'Hibás email vagy jelszó.' });
+            }
+    
+            const token = jwt.sign(
+                { id: user.felhasznalo_id, felhasznev: user.felhasznev },
+                JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+    
+            res.json({ message: 'Sikeres bejelentkezés!', token });
+    
+        } catch (e) {
+            console.error('BCRYPT ERROR:', e);
+            return res.status(500).json({ error: 'Bcrypt hiba.' });
+        }
+    });
+    
+});
+
+
+/* frontend login dolog
+fetch('http://localhost:3000/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        email: 'test@test.hu',
+        jelszo: '123456'
+    })
+})
+.then(res => res.json())
+.then(data => {
+    localStorage.setItem('token', data.token);
+});
+
+*/ 
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+
+app.get('/profile', authenticateToken, (req, res) => {
+    res.json(req.user);
+});
 
 
 app.listen(port, () => {
