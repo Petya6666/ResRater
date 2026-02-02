@@ -53,7 +53,7 @@ app.get('/users', (req, res) => {
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
-    const sql = 'SELECT ettermek.nev, ettermek.varos, ertekelesek.atlag, kepek.url FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id;';
+    const sql = 'SELECT ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.url FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
     db.query(sql, (err, result) => {
         if (err) return res.json(err); 
         return res.json(result)
