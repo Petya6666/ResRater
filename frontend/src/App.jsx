@@ -5,6 +5,7 @@ import Restaurants from './pages/Restaurants.jsx'
 import Register from './pages/Register.jsx'
 import Login from './pages/Login.jsx'
 
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
