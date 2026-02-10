@@ -1,6 +1,6 @@
 mestermunka teendők:
 
-kategóriákkal valami
+
 képek átrakása mappába
 értékelések kiegészítése?
 értékelés api
