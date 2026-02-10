@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Feb 02. 10:25
+-- Létrehozás ideje: 2026. Feb 10. 08:43
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -98,7 +98,7 @@ INSERT INTO `ettermek` (`etterem_id`, `nev`, `telefon`, `leiras`, `kategoria`, `
 CREATE TABLE `felhasznalok` (
   `felhasznalo_id` int(10) NOT NULL,
   `felhasznev` varchar(25) NOT NULL,
-  `jelszo` varchar(50) NOT NULL,
+  `jelszo` varchar(100) NOT NULL,
   `email` varchar(20) NOT NULL,
   `reg_datum` date NOT NULL DEFAULT current_timestamp(),
   `szerep` enum('felhasznalo','admin') NOT NULL DEFAULT 'felhasznalo'
@@ -119,10 +119,9 @@ INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `
 (8, 'farkasgergo', '890123', 'gergo.farkas@example', '2025-08-15', 'felhasznalo'),
 (9, 'molnarnora', '901234', 'nora.molnar@example.', '2025-09-03', 'felhasznalo'),
 (10, 'szilagyizoltan', '123789', 'zoltan.szilagyi@exam', '2025-10-22', 'admin'),
-(11, 'pisti123', '0', 'pisti@example.com', '2025-11-13', 'felhasznalo'),
-(12, 'jani', '0', 'pisti@example.com', '2025-11-13', 'felhasznalo'),
 (13, 'asasaaf', '$2b$10$ddXFuO/dH0GL1BXV6URaJuBw.Oi.0dw/YhKrejpb92f', 'bahfbaf@nasdja.hu', '2026-01-21', 'felhasznalo'),
-(14, 'ahahadb', '$2b$10$Qf2kEnZEet341Xy.aGxsW.LN8VHetj//AYb2EOa2aGY', 'jka@example.com', '2026-01-21', 'felhasznalo');
+(14, 'ahahadb', '$2b$10$Qf2kEnZEet341Xy.aGxsW.LN8VHetj//AYb2EOa2aGY', 'jka@example.com', '2026-01-21', 'felhasznalo'),
+(15, 'péter', '$2b$10$Xvl3Z1A09Acf6O1Z6eCJoOogB5c3V7zbrV.7nF50bb84rcBeJQ8IC', 'peti@example.com', '2026-02-10', 'felhasznalo');
 
 -- --------------------------------------------------------
 
@@ -220,7 +219,7 @@ ALTER TABLE `varosok`
 -- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
-  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Megkötések a kiírt táblákhoz

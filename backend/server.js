@@ -177,45 +177,59 @@ app.patch('/users/:id/password', async (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    const { email, jelszo } = req.body;
+    const { azonosito, email, jelszo } = req.body;
+    const loginValue = azonosito || email;
 
-    if (!email || !jelszo) {
+    if (!loginValue || !jelszo) {
         return res.status(400).json({ error: 'Minden mezőt ki kell tölteni!' });
     }
 
-    const sql = 'SELECT felhasznalo_id, felhasznev, jelszo FROM felhasznalok WHERE email = ?';
+    const sql = `
+        SELECT felhasznalo_id, felhasznev, jelszo
+        FROM felhasznalok
+        WHERE email = ? OR felhasznev = ?
+        LIMIT 1
+    `;
 
-    db.query(sql, [email], async (err, result) => {
-        if (err) return res.status(500).json({ error: 'Adatbázis hiba.' });
-    
-        if (result.length === 0) {
-            return res.status(401).json({ error: 'Hibás email vagy jelszó.' });
+    db.query(sql, [loginValue, loginValue], async (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Adatbázis hiba.' });
         }
-    
-        try {
 
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Hibás belépési adatok.' });
+        }
+
+        try {
             const user = result[0];
             const match = await bcrypt.compare(jelszo, user.jelszo);
-    
+
             if (!match) {
-                return res.status(401).json({ error: 'Hibás email vagy jelszó.' });
+                return res.status(401).json({ error: 'Hibás belépési adatok.' });
             }
-    
+
             const token = jwt.sign(
-                { id: user.felhasznalo_id, felhasznev: user.felhasznev },
+                {
+                    id: user.felhasznalo_id,
+                    felhasznev: user.felhasznev
+                },
                 JWT_SECRET,
                 { expiresIn: '1h' }
             );
-    
-            res.json({ message: 'Sikeres bejelentkezés!', token });
-    
+
+            res.json({
+                message: 'Sikeres bejelentkezés!',
+                token
+            });
+
         } catch (e) {
             console.error('BCRYPT ERROR:', e);
             return res.status(500).json({ error: 'Bcrypt hiba.' });
         }
     });
-    
 });
+
 
 
 /* frontend login dolog

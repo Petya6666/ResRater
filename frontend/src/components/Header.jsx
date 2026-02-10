@@ -40,7 +40,7 @@ const Header = () => {
                     {showDropdown && (
                         <div className="dropdown-menu">
                             <Link to="/register" className="dropdown-item">Regisztráció</Link>
-                           
+                            <Link to="/login" className="dropdown-item">Bejelentkezés</Link>
                         </div>
                     )}
                 </Navbar.Brand>
