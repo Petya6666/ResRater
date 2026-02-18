@@ -17,7 +17,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'resrater_db',
-    port: 3307
+    port: 3306
 });
 
 //teszt
@@ -55,7 +55,7 @@ app.get('/users', (req, res) => {
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
-    const sql = 'SELECT ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.url FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
+    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.url FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
     db.query(sql, (err, result) => {
         if (err) return res.json(err); 
         return res.json(result)
@@ -65,15 +65,19 @@ app.get('/browserettermek', (req, res) => {
 //egy adott étterem minden adatának lekérése
 app.get('/etterem/:id', (req, res) => {
     const id = req.params.id;
-    const sql = 'SELECT ettermek.nev, ettermek.telefon, ettermek.leiras, ettermek.kategoria, ettermek.iranyitoszam, varosok.varos, kepek.url FROM ettermek INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id; WHERE ettermek.etterem_id = ?';
+    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.telefon, ettermek.leiras, kategoriak.kategoria_nev as kategoria, ettermek.iranyitoszam, varosok.varos, kepek.url FROM ettermek INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id LEFT JOIN kategoriak ON ettermek.kategoria_id = kategoriak.kategoria_id WHERE ettermek.etterem_id = ?';
 
     db.query(sql, [id], (err, result) => {
-        if (err) return res.json(err);
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
 
         if (result.length === 0) {
             return res.status(404).json({ message: 'Etterem not found' });
         }
 
+        console.log('Sending restaurant data:', result[0]);
         return res.json(result[0]); 
     });
 });
