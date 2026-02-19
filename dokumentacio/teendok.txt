@@ -3,6 +3,4 @@ mestermunka teendők:
 
 képek átrakása mappába
 értékelések kiegészítése?
-értékelés api
-link létrehozása az éttermekhez a frontenben
-adott étterem oldalának megírása frontendben
+kommentek táblába date beszúrása

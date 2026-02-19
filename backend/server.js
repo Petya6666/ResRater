@@ -84,7 +84,7 @@ app.get('/etterem/:id', (req, res) => {
 
 app.get('/ertekeles/:id', (req, res) => {
     const id = req.params.id;
-    const sql = 'SELECT ettermek.nev, ettermek.telefon, ettermek.leiras, ettermek.kategoria, ettermek.iranyitoszam, varosok.varos, kepek.url FROM ettermek INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id; WHERE ettermek.etterem_id = ?';
+    const sql = 'SELECT ettermek.etterem_id, ertekelesek.atlag, ertekelesek.etelminoseg, ertekelesek.kiszolgalas, ertekelesek.hangulat FROM ettermek INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id WHERE ettermek.etterem_id = ?';
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json(err);
@@ -96,6 +96,19 @@ app.get('/ertekeles/:id', (req, res) => {
         return res.json(result[0]); 
     });
 });
+
+app.get('/kommentek', (req, res) => {
+    const id = req.params.id;
+    const sql = 'under construction';
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.json(err);
+
+
+        return res.json(result[0]); 
+    });
+});
+
 
 
 
