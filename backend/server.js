@@ -55,7 +55,7 @@ app.get('/users', (req, res) => {
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
-    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.url FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
+    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.fajl_nev FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
     db.query(sql, (err, result) => {
         if (err) return res.json(err); 
         return res.json(result)
@@ -65,7 +65,7 @@ app.get('/browserettermek', (req, res) => {
 //egy adott étterem minden adatának lekérése
 app.get('/etterem/:id', (req, res) => {
     const id = req.params.id;
-    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.telefon, ettermek.leiras, kategoriak.kategoria_nev as kategoria, ettermek.iranyitoszam, varosok.varos, kepek.url FROM ettermek INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id LEFT JOIN kategoriak ON ettermek.kategoria_id = kategoriak.kategoria_id WHERE ettermek.etterem_id = ?';
+    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.telefon, ettermek.leiras, kategoriak.kategoria_nev as kategoria, ettermek.iranyitoszam, varosok.varos, kepek.fajl_nev FROM ettermek INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id LEFT JOIN kategoriak ON ettermek.kategoria_id = kategoriak.kategoria_id WHERE ettermek.etterem_id = ?';
 
     db.query(sql, [id], (err, result) => {
         if (err) {
