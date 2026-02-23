@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Feb 10. 14:42
+-- Létrehozás ideje: 2026. Feb 23. 12:09
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -154,26 +154,27 @@ INSERT INTO `kategoriak` (`kategoria_id`, `kategoria_nev`) VALUES
 CREATE TABLE `kepek` (
   `kep_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
-  `url` varchar(255) NOT NULL,
+  `fajl_nev` varchar(255) NOT NULL,
   `leiras` varchar(100) NOT NULL,
-  `feltoltes_datum` datetime NOT NULL
+  `feltoltes_datum` datetime NOT NULL,
+  `eredeti_nev` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
 -- A tábla adatainak kiíratása `kepek`
 --
 
-INSERT INTO `kepek` (`kep_id`, `etterem_id`, `url`, `leiras`, `feltoltes_datum`) VALUES
-(1, 9, 'https://unsplash.com/s/photos/restaurant', 'ez egy étterem', '2026-01-22 12:44:39'),
-(2, 10, 'https://unsplash.com/s/photos/restaurant', 'Belső éttermi hangulat, teríték és gyertyák', '2026-02-01 17:02:22'),
-(3, 8, 'https://stock.adobe.com/search?k=hotel+restaurant', 'Vacsora két főre – elegáns szervírozás', '2026-02-01 17:02:22'),
-(4, 7, 'https://create.vista.com/photos/fine-restaurants/', 'Fine dining tálalás közelről', '2026-02-01 17:02:22'),
-(5, 6, 'https://tse1.mm.bing.net/th/id/OIP.uOL3IHCPLNqiFl_GpAMYLAHaFH?rs=1&pid=ImgDetMain&o=7&rm=3', 'Séf munka közben a konyhában', '2026-02-01 17:02:22'),
-(6, 5, 'https://www.freepik.com/free-photos-vectors/restaurant', 'Modern étterem enteriőr', '2026-02-01 17:02:22'),
-(7, 4, 'https://stock.adobe.com/search?k=empty+table+restaurant', 'Asztalterítés borospoharakkal', '2026-02-01 17:02:22'),
-(8, 3, 'https://img.freepik.com/premium-photo/restaurant-interior-design-virtual-dining-space-design-immersive-ambiance-modern-decor_1218867-365364.jpg?w=2000', 'Ínyenc fogás – kreatív tálalás', '2026-02-01 17:02:22'),
-(9, 2, 'https://depositphotos.com/hu/photos/restaurant.html', 'Forró főétel felszolgálva', '2026-02-01 17:02:22'),
-(10, 1, 'https://www.vecteezy.com/free-photos/fancy-restaurant', 'Felszolgáló italokat hoz az asztalhoz', '2026-02-01 17:02:22');
+INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_datum`, `eredeti_nev`) VALUES
+(1, 9, 'kepek/AranyKanal.png', 'ez egy étterem', '2026-01-22 12:44:39', ''),
+(2, 10, 'https://unsplash.com/s/photos/restaurant', 'Belső éttermi hangulat, teríték és gyertyák', '2026-02-01 17:02:22', ''),
+(3, 8, 'https://stock.adobe.com/search?k=hotel+restaurant', 'Vacsora két főre – elegáns szervírozás', '2026-02-01 17:02:22', ''),
+(4, 7, 'kepek/AranyKanal.png', 'Fine dining tálalás közelről', '2026-02-01 17:02:22', ''),
+(5, 6, 'https://tse1.mm.bing.net/th/id/OIP.uOL3IHCPLNqiFl_GpAMYLAHaFH?rs=1&pid=ImgDetMain&o=7&rm=3', 'Séf munka közben a konyhában', '2026-02-01 17:02:22', ''),
+(6, 5, 'https://www.freepik.com/free-photos-vectors/restaurant', 'Modern étterem enteriőr', '2026-02-01 17:02:22', ''),
+(7, 4, 'https://stock.adobe.com/search?k=empty+table+restaurant', 'Asztalterítés borospoharakkal', '2026-02-01 17:02:22', ''),
+(8, 3, 'https://img.freepik.com/premium-photo/restaurant-interior-design-virtual-dining-space-design-immersive-ambiance-modern-decor_1218867-365364.jpg?w=2000', 'Ínyenc fogás – kreatív tálalás', '2026-02-01 17:02:22', ''),
+(9, 2, 'https://depositphotos.com/hu/photos/restaurant.html', 'Forró főétel felszolgálva', '2026-02-01 17:02:22', ''),
+(10, 1, 'https://www.vecteezy.com/free-photos/fancy-restaurant', 'Felszolgáló italokat hoz az asztalhoz', '2026-02-01 17:02:22', '');
 
 -- --------------------------------------------------------
 
@@ -185,18 +186,19 @@ CREATE TABLE `kommentek` (
   `komment_id` int(5) NOT NULL,
   `felhasznalo_id` int(5) NOT NULL,
   `etterem_id` int(5) NOT NULL,
-  `megjegyzes` varchar(255) NOT NULL
+  `megjegyzes` varchar(255) NOT NULL,
+  `letrehoz_ido` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- A tábla adatainak kiíratása `kommentek`
 --
 
-INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyzes`) VALUES
-(1, 3, 1, 'Kiváló ízek és barátságos kiszolgálás.'),
-(2, 2, 3, 'Túl sokat kellett várni, de az étel finom volt.'),
-(3, 7, 5, 'Hangulatos hely, visszatérünk még.'),
-(4, 4, 2, 'Az adagok kicsik voltak, de ízletesek.');
+INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyzes`, `letrehoz_ido`) VALUES
+(1, 3, 1, 'Kiváló ízek és barátságos kiszolgálás.', '2026-02-23 10:13:38'),
+(2, 2, 3, 'Túl sokat kellett várni, de az étel finom volt.', '2026-02-23 10:13:38'),
+(3, 7, 5, 'Hangulatos hely, visszatérünk még.', '2026-02-23 10:13:38'),
+(4, 4, 2, 'Az adagok kicsik voltak, de ízletesek.', '2026-02-23 10:13:38');
 
 -- --------------------------------------------------------
 
@@ -288,10 +290,16 @@ ALTER TABLE `kategoriak`
   MODIFY `kategoria_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT a táblához `kepek`
+--
+ALTER TABLE `kepek`
+  MODIFY `kep_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT a táblához `kommentek`
 --
 ALTER TABLE `kommentek`
-  MODIFY `komment_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `komment_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Megkötések a kiírt táblákhoz
