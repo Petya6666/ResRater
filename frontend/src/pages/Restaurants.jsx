@@ -14,7 +14,14 @@ const Restaurants = () => {
     try {
       const result = await axios.get('http://localhost:3000/browserettermek');
       console.log('Ettermek data:', result.data); // Debug log
-      setettermek(result.data);
+
+      // Update the URL to include the base path for images
+      const updatedData = result.data.map(etterem => ({
+        ...etterem,
+        url: `http://localhost:3000/kepek/${etterem.fajl_nev}`
+      }));
+
+      setettermek(updatedData);
     } catch (error) {
       console.error('Hiba az éttermek lekérése során:', error);
     }
