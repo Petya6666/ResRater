@@ -64,7 +64,9 @@ const Restaurant = () => {
           <div className='doboz row'>
             <div className='col-md-6'>
               <img 
-                src={etterem.url} 
+                src={etterem.fajl_nev.startsWith('kepek/') 
+                  ? `http://localhost:3000/${etterem.fajl_nev}` 
+                  : `http://localhost:3000/kepek/${etterem.fajl_nev}`} 
                 alt={etterem.nev} 
                 className='img-fluid rounded'
                 style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
