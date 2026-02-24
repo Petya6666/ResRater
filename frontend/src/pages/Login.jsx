@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import '../styles/index.css';
 
@@ -16,10 +17,19 @@ axios.get('http://localhost:3000/profile', {
 */
 
 const Login = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         azonosito: '',
         jelszo: ''
     });
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/'); // Redirect to the home page if already signed in
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,6 +68,7 @@ const Login = () => {
                 jelszo: ''
             });
 
+            navigate('/'); // Redirect to the home page after login
 
         } catch (error) {
             console.error('LOGIN ERROR:', error.response?.data || error);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,9 +8,16 @@ import Navbar from 'react-bootstrap/Navbar';
 
 const Header = () => {
     const [showDropdown, setShowDropdown] = useState(false);
+    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
     };
 
     return (
@@ -39,8 +46,17 @@ const Header = () => {
                     />
                     {showDropdown && (
                         <div className="dropdown-menu">
-                            <Link to="/register" className="dropdown-item">Regisztráció</Link>
-                            <Link to="/login" className="dropdown-item">Bejelentkezés</Link>
+                            {token ? (
+                                <>
+                                    <Link to="/profile" className="dropdown-item">Profil</Link>
+                                    <button onClick={handleLogout} className="dropdown-item">Kijelentkezés</button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/register" className="dropdown-item">Regisztráció</Link>
+                                    <Link to="/login" className="dropdown-item">Bejelentkezés</Link>
+                                </>
+                            )}
                         </div>
                     )}
                 </Navbar.Brand>
