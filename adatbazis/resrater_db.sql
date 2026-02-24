@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Feb 23. 12:09
+-- Létrehozás ideje: 2026. Feb 24. 13:09
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `resrater_db`
 --
-CREATE DATABASE IF NOT EXISTS `resrater_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `resrater_db`;
 
 -- --------------------------------------------------------
 
@@ -120,7 +118,9 @@ INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `
 (10, 'szilagyizoltan', '123789', 'zoltan.szilagyi@exam', '2025-10-22', 'admin'),
 (13, 'asasaaf', '$2b$10$ddXFuO/dH0GL1BXV6URaJuBw.Oi.0dw/YhKrejpb92f', 'bahfbaf@nasdja.hu', '2026-01-21', 'felhasznalo'),
 (14, 'ahahadb', '$2b$10$Qf2kEnZEet341Xy.aGxsW.LN8VHetj//AYb2EOa2aGY', 'jka@example.com', '2026-01-21', 'felhasznalo'),
-(15, 'péter', '$2b$10$Xvl3Z1A09Acf6O1Z6eCJoOogB5c3V7zbrV.7nF50bb84rcBeJQ8IC', 'peti@example.com', '2026-02-10', 'felhasznalo');
+(15, 'péter', '$2b$10$Xvl3Z1A09Acf6O1Z6eCJoOogB5c3V7zbrV.7nF50bb84rcBeJQ8IC', 'peti@example.com', '2026-02-10', 'felhasznalo'),
+(16, 'Petyaa', '$2b$10$wa16UpW8GpWtAxGdda/vLeG/5JVM/Z8RZNfY.T/uzCtnJN53fIEVK', 'palpet478@hengersor.', '2026-02-24', 'felhasznalo'),
+(17, 'Alma', '$2b$10$DM8e3IvR09g42PhcN.UAMOBsGaLnq6MW0beKVjMp1MsgtoQI.FXCa', 'alma@gmail.com', '2026-02-24', 'felhasznalo');
 
 -- --------------------------------------------------------
 
@@ -165,16 +165,16 @@ CREATE TABLE `kepek` (
 --
 
 INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_datum`, `eredeti_nev`) VALUES
-(1, 9, 'kepek/AranyKanal.png', 'ez egy étterem', '2026-01-22 12:44:39', ''),
-(2, 10, 'https://unsplash.com/s/photos/restaurant', 'Belső éttermi hangulat, teríték és gyertyák', '2026-02-01 17:02:22', ''),
-(3, 8, 'https://stock.adobe.com/search?k=hotel+restaurant', 'Vacsora két főre – elegáns szervírozás', '2026-02-01 17:02:22', ''),
-(4, 7, 'kepek/AranyKanal.png', 'Fine dining tálalás közelről', '2026-02-01 17:02:22', ''),
-(5, 6, 'https://tse1.mm.bing.net/th/id/OIP.uOL3IHCPLNqiFl_GpAMYLAHaFH?rs=1&pid=ImgDetMain&o=7&rm=3', 'Séf munka közben a konyhában', '2026-02-01 17:02:22', ''),
-(6, 5, 'https://www.freepik.com/free-photos-vectors/restaurant', 'Modern étterem enteriőr', '2026-02-01 17:02:22', ''),
-(7, 4, 'https://stock.adobe.com/search?k=empty+table+restaurant', 'Asztalterítés borospoharakkal', '2026-02-01 17:02:22', ''),
-(8, 3, 'https://img.freepik.com/premium-photo/restaurant-interior-design-virtual-dining-space-design-immersive-ambiance-modern-decor_1218867-365364.jpg?w=2000', 'Ínyenc fogás – kreatív tálalás', '2026-02-01 17:02:22', ''),
-(9, 2, 'https://depositphotos.com/hu/photos/restaurant.html', 'Forró főétel felszolgálva', '2026-02-01 17:02:22', ''),
-(10, 1, 'https://www.vecteezy.com/free-photos/fancy-restaurant', 'Felszolgáló italokat hoz az asztalhoz', '2026-02-01 17:02:22', '');
+(1, 9, 'Hot&Go.png', 'ez egy étterem', '2026-01-22 12:44:39', ''),
+(2, 10, 'Zabalora.png', 'Belső éttermi hangulat, teríték és gyertyák', '2026-02-01 17:02:22', ''),
+(3, 8, 'Bors&Lelek.png', 'Vacsora két főre – elegáns szervírozás', '2026-02-01 17:02:22', ''),
+(4, 7, 'AranyKanal.png', 'Fine dining tálalás közelről', '2026-02-01 17:02:22', ''),
+(5, 6, 'PirosPaprika.png', 'Séf munka közben a konyhában', '2026-02-01 17:02:22', ''),
+(6, 5, 'Langoszona.png', 'Modern étterem enteriőr', '2026-02-01 17:02:22', ''),
+(7, 4, 'KacsaAKodben.png', 'Asztalterítés borospoharakkal', '2026-02-01 17:02:22', ''),
+(8, 3, 'DeakFalatozo.png', 'Ínyenc fogás – kreatív tálalás', '2026-02-01 17:02:22', ''),
+(9, 2, 'LegjobbCsarda.png', 'Forró főétel felszolgálva', '2026-02-01 17:02:22', ''),
+(10, 1, 'BurgerPart.png', 'Felszolgáló italokat hoz az asztalhoz', '2026-02-01 17:02:22', '');
 
 -- --------------------------------------------------------
 
@@ -281,7 +281,7 @@ ALTER TABLE `varosok`
 -- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
-  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT a táblához `kategoriak`
