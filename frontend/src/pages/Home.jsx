@@ -18,7 +18,7 @@ function Home(){
       </div>
       <div className='card-container' >
       <Card >
-      <Card.Img variant="top" src="./public/noFilter.png"  className='kep'/>
+      <Card.Img variant="top" src="/noFilter.png"  className='kep'/>
       <Card.Body className='kartya'>
         <Card.Title className='feher'>Kardos Tamás</Card.Title>
         <Card.Text className='feher'>

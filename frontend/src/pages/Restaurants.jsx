@@ -15,10 +15,11 @@ const Restaurants = () => {
       const result = await axios.get('http://localhost:3000/browserettermek');
       console.log('Ettermek data:', result.data); // Debug log
 
-      // Update the URL to include the base path for images
       const updatedData = result.data.map(etterem => ({
         ...etterem,
-        url: `http://localhost:3000/kepek/${etterem.fajl_nev}`
+        url: etterem.fajl_nev.startsWith('kepek/')
+          ? `http://localhost:3000/${etterem.fajl_nev}`
+          : `http://localhost:3000/kepek/${etterem.fajl_nev}`
       }));
 
       setettermek(updatedData);
@@ -31,7 +32,7 @@ const Restaurants = () => {
 }, []);
 
   const handleCardClick = (etterem) => {
-    console.log('Clicked restaurant:', etterem); // Debug log
+    console.log('Clicked restaurant:', etterem); 
     navigate(`/restaurant/${etterem.etterem_id}`);
 };
 

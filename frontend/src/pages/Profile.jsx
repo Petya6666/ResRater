@@ -1,16 +1,21 @@
 import React from 'react';
 import Header from '../components/Header.jsx';
+import '../styles/index.css';
 
-const Profile = () => {
+function Profile(){
     return (
-        <div>
-            <Header />
-            <div className="profile-container">
-                <h1>Profile Page</h1>
-                <p>Welcome to your profile!</p>
-            </div>
+    <>
+      <Header />
+      <br />
+        <div className='doboz'>
+        <h1>Profil oldal</h1>
+        <br />
+        <p>Ez a profil oldal. Itt megjelenítheted a felhasználói adataidat, értékeléseidet és egyéb információkat.</p>
+        <br />
+        <br />
         </div>
-    );
-};
+    </>
+    )
+}
 
 export default Profile;

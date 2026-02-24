@@ -27,7 +27,7 @@ const Login = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            navigate('/'); // Redirect to the home page if already signed in
+            navigate('/'); 
         }
     }, [navigate]);
 
@@ -68,7 +68,7 @@ const Login = () => {
                 jelszo: ''
             });
 
-            navigate('/'); // Redirect to the home page after login
+            navigate('/');
 
         } catch (error) {
             console.error('LOGIN ERROR:', error.response?.data || error);
