@@ -12,10 +12,10 @@ const Register = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [name]: value
-        });
+        }));
     };
 
     const handleSubmit = async () => {
@@ -25,20 +25,17 @@ const Register = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            if (response.status === 200) {
+
+            if (response.status === 201) {
                 alert(response.data.message);
-                setFormData({
-                    ...formData,
-                    felhasznev: '',
-                    email: '',
-                    jelszo: ''
-                });
+                // clear all inputs on success
+                setFormData({ felhasznev: '', email: '', jelszo: '' });
             } else {
-                alert(response.data.error);
+                alert(response.data.error || 'Hiba történt a regisztráció során.');
             }
         } catch (error) {
-            console.error('Hiba történt:', error);
-            alert('Hiba történt a regisztráció során.');
+            console.error('Hiba történt:', error.response?.data || error);
+            alert(error.response?.data?.error || 'Hiba történt a regisztráció során.');
         }
     };
 
@@ -50,7 +47,6 @@ const Register = () => {
                 <div>
                     {Object.keys(formData).map((key) => (
                         <div key={key}>
-                            
                             <input
                                 className="input-field"
                                 type={key === 'email' ? 'email' : key === 'jelszo' ? 'password' : 'text'}

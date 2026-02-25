@@ -60,6 +60,10 @@ const Login = () => {
             );
 
             localStorage.setItem('token', response.data.token);
+            if (response.data.user) {
+                localStorage.setItem('userId', response.data.user.id);
+                localStorage.setItem('felhasznev', response.data.user.felhasznev);
+            }
 
             alert(response.data.message);
 

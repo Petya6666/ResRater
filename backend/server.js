@@ -159,7 +159,10 @@ app.patch('/users/:id/username', (req, res) => {
             return res.status(404).json({ error: 'Felhasználó nem található.' });
         }
 
-        res.json({ message: 'Felhasználónév sikeresen frissítve.' });
+        res.json({
+            message: 'Felhasználónév sikeresen frissítve.',
+            felhasznev
+        });
     });
 });
 
@@ -244,7 +247,11 @@ app.post('/login', (req, res) => {
 
             res.json({
                 message: 'Sikeres bejelentkezés!',
-                token
+                token,
+                user: {
+                    id: user.felhasznalo_id,
+                    felhasznev: user.felhasznev
+                }
             });
 
         } catch (e) {
@@ -254,8 +261,13 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-
+// get current user from token
+app.get('/me', authenticateToken, (req, res) => {
+    res.json({
+        id: req.user.id,
+        felhasznev: req.user.felhasznev
+    });
+});
 
 //middleware a token ellenőrzésére
 function authenticateToken(req, res, next) {

@@ -7,17 +7,51 @@ function Profile(){
     const [regiJelszo, setRegiJelszo] = useState('');
     const [ujJelszo, setUjJelszo] = useState('');
 
-    const handleUsernameSubmit = (e) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    const storedName = localStorage.getItem('felhasznev') || 'Felhasználó';
+
+    const handleUsernameSubmit = async (e) => {
         e.preventDefault();
         if (!felhasznev.trim()) {
             alert('Add meg az új felhasználónevet!');
             return;
         }
-        // ide jön majd az API hívás
-        alert('Felhasználónév sikeresen módosítva! (teszt)');
+        if (!userId) {
+            alert('Nincs bejelentkezett felhasználó.');
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:3000/users/${userId}/username`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify({ felhasznev })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.error || 'Hiba történt a felhasználónév módosításakor.');
+                return;
+            }
+
+            alert(data.message || 'Felhasználónév sikeresen módosítva.');
+            if (data.felhasznev) {
+                localStorage.setItem('felhasznev', data.felhasznev);
+            }
+            setFelhasznev(''); 
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            alert('Szerver hiba történt.');
+        }
     };
 
-    const handlePasswordSubmit = (e) => {
+    const handlePasswordSubmit = async (e) => {
         e.preventDefault();
         if (!regiJelszo || !ujJelszo) {
             alert('Tölts ki minden jelszó mezőt!');
@@ -27,8 +61,35 @@ function Profile(){
             alert('Az új jelszónak különböznie kell a régi jelszótól!');
             return;
         }
-        // ide jön majd az API hívás
-        alert('Jelszó sikeresen módosítva! (teszt)');
+        if (!userId) {
+            alert('Nincs bejelentkezett felhasználó.');
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:3000/users/${userId}/password`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify({ regiJelszo, ujJelszo })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.error || 'Hiba történt a jelszó módosításakor.');
+                return;
+            }
+
+            alert(data.message || 'Jelszó sikeresen módosítva.');
+            setRegiJelszo('');
+            setUjJelszo('');
+        } catch (err) {
+            console.error(err);
+            alert('Szerver hiba történt.');
+        }
     };
 
     return (
@@ -36,6 +97,8 @@ function Profile(){
             <Header />
 
             <div className='login-doboz'>
+                <h2 className='felhasznalo'>Üdv, {storedName}!</h2>
+                <br />
                 <h2>Felhasználónév módosítása</h2>
                 <input
                     className="input-field"
