@@ -19,16 +19,6 @@ const db = mysql.createConnection({
     port: 3307
 });
 
-//teszt
-/*
-db.connect(err => {
-    if (err) {
-        console.error('Adatbázis kapcsolat hiba:', err);
-        return;
-    }
-    console.log('Sikeresen kapcsolódva az adatbázishoz.');
-});
-*/
 
 app.get('/', (req, res) => {
     res.send('Welcome to ResRater API');
@@ -81,6 +71,7 @@ app.get('/etterem/:id', (req, res) => {
     });
 });
 
+//egy adott étterem értékelésének lekérése
 app.get('/ertekeles/:id', (req, res) => {
     const id = req.params.id;
     const sql = 'SELECT ettermek.etterem_id, ertekelesek.atlag, ertekelesek.etelminoseg, ertekelesek.kiszolgalas, ertekelesek.hangulat FROM ettermek INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id WHERE ettermek.etterem_id = ?';
@@ -96,9 +87,10 @@ app.get('/ertekeles/:id', (req, res) => {
     });
 });
 
+//egy adott étterem kommentjeinek lekérése
 app.get('/kommentek', (req, res) => {
     const id = req.params.id;
-    const sql = 'under construction';
+    const sql = 'SELECT kommentek.komment_id, ettermek.etterem_id, felhasznalok.felhasznev, kommentek.megjegyzes, kommentek.letrehoz_ido FROM kommentek INNER JOIN felhasznalok ON kommentek.felhasznalo_id = felhasznalok.felhasznalo_id INNER JOIN ettermek ON kommentek.etterem_id = ettermek.etterem_id WHERE ettermek.etterem_id = ?;';
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.json(err);
@@ -146,7 +138,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
-
+//felhasznalonev modositasa
 app.patch('/users/:id/username', (req, res) => {
     const { id } = req.params;
     const { felhasznev } = req.body;
@@ -171,7 +163,7 @@ app.patch('/users/:id/username', (req, res) => {
     });
 });
 
-
+//jelszo modositasa
 app.patch('/users/:id/password', async (req, res) => {
     const { id } = req.params;
     const { regiJelszo, ujJelszo } = req.body;
@@ -207,7 +199,7 @@ app.patch('/users/:id/password', async (req, res) => {
     });
 });
 
-
+//felhasználói bejelentkezés
 app.post('/login', (req, res) => {
     const { azonosito, email, jelszo } = req.body;
     const loginValue = azonosito || email;
@@ -264,22 +256,8 @@ app.post('/login', (req, res) => {
 
 
 
-/* frontend login dolog
-fetch('http://localhost:3000/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        email: 'test@test.hu',
-        jelszo: '123456'
-    })
-})
-.then(res => res.json())
-.then(data => {
-    localStorage.setItem('token', data.token);
-});
 
-*/ 
-
+//middleware a token ellenőrzésére
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -293,7 +271,7 @@ function authenticateToken(req, res, next) {
     });
 }
 
-
+//védelem alatt álló profil oldal
 app.get('/profile', authenticateToken, (req, res) => {
     res.json(req.user);
 });
