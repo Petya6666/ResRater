@@ -113,23 +113,35 @@ app.post('/register', async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(jelszo, 10);
-
-        const sql = `
-            INSERT INTO felhasznalok (felhasznev, email, jelszo)
-            VALUES (?, ?, ?)
-        `;
-
-        db.query(sql, [felhasznev, email, hashedPassword], (err, result) => {
+        const checkSql = 'SELECT felhasznev, email FROM felhasznalok WHERE felhasznev = ? OR email = ?';
+        db.query(checkSql, [felhasznev, email], async (err, result) => {
             if (err) {
-                console.error('Hiba a regisztráció során:', err);
+                console.error('Hiba az ellenőrzés során:', err);
                 return res.status(500).json({ error: 'Adatbázis hiba történt.' });
             }
 
-            res.status(201).json({
-                message: 'Sikeres regisztráció!',
-                felhasznalo_id: result.insertId,
-                szerep: 'felhasznalo'
+            if (result.length > 0) {
+                return res.status(400).json({ error: 'A felhasználónév vagy email már létezik!' });
+            }
+
+            const hashedPassword = await bcrypt.hash(jelszo, 10);
+
+            const sql = `
+                INSERT INTO felhasznalok (felhasznev, email, jelszo)
+                VALUES (?, ?, ?)
+            `;
+
+            db.query(sql, [felhasznev, email, hashedPassword], (err, result) => {
+                if (err) {
+                    console.error('Hiba a regisztráció során:', err);
+                    return res.status(500).json({ error: 'Adatbázis hiba történt.' });
+                }
+
+                res.status(201).json({
+                    message: 'Sikeres regisztráció!',
+                    felhasznalo_id: result.insertId,
+                    szerep: 'felhasznalo'
+                });
             });
         });
     } catch (error) {
