@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Feb 24. 13:09
+-- Létrehozás ideje: 2026. Feb 26. 12:42
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `resrater_db`
 --
+CREATE DATABASE IF NOT EXISTS `resrater_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `resrater_db`;
 
 -- --------------------------------------------------------
 
@@ -30,7 +32,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `ertekelesek` (
   `ertekeles_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
-  `felhasznalo_id` int(11) NOT NULL,
+  `felhasznalo_id` int(11) DEFAULT NULL,
   `atlag` tinyint(4) NOT NULL,
   `datum` datetime NOT NULL,
   `etelminoseg` int(5) NOT NULL,
@@ -43,16 +45,16 @@ CREATE TABLE `ertekelesek` (
 --
 
 INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atlag`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
-(1, 1, 3, 5, '2025-11-01 12:00:00', 1, 1, 1),
-(2, 2, 7, 2, '2025-11-02 13:00:00', 2, 2, 2),
-(3, 3, 5, 4, '2025-11-03 14:00:00', 3, 3, 3),
-(4, 4, 1, 3, '2025-11-04 15:00:00', 4, 4, 4),
-(5, 5, 9, 5, '2025-11-05 16:00:00', 5, 5, 5),
-(6, 6, 2, 1, '2025-11-06 17:00:00', 6, 6, 6),
-(7, 7, 10, 4, '2025-11-07 18:00:00', 7, 7, 7),
-(8, 8, 4, 2, '2025-11-08 19:00:00', 8, 8, 8),
-(9, 9, 6, 5, '2025-11-09 20:00:00', 9, 9, 9),
-(10, 10, 8, 3, '2025-11-10 21:00:00', 10, 10, 10);
+(1, 1, NULL, 5, '2025-11-01 12:00:00', 1, 1, 1),
+(2, 2, NULL, 2, '2025-11-02 13:00:00', 2, 2, 2),
+(3, 3, NULL, 4, '2025-11-03 14:00:00', 3, 3, 3),
+(4, 4, NULL, 3, '2025-11-04 15:00:00', 4, 4, 4),
+(5, 5, NULL, 5, '2025-11-05 16:00:00', 5, 5, 5),
+(6, 6, NULL, 1, '2025-11-06 17:00:00', 6, 6, 6),
+(7, 7, NULL, 4, '2025-11-07 18:00:00', 7, 7, 7),
+(8, 8, NULL, 2, '2025-11-08 19:00:00', 8, 8, 8),
+(9, 9, NULL, 5, '2025-11-09 20:00:00', 9, 9, 9),
+(10, 10, NULL, 3, '2025-11-10 21:00:00', 10, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -106,21 +108,12 @@ CREATE TABLE `felhasznalok` (
 --
 
 INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `reg_datum`, `szerep`) VALUES
-(1, 'kovacsistvan', '123456', 'istvan.kovacs@exampl', '2025-01-15', 'felhasznalo'),
-(2, 'szabozsuzsa', '234567', 'zsuzsa.szabo@example', '2025-02-20', 'felhasznalo'),
-(3, 'nagyadam', '345678', 'adam.nagy@example.co', '2025-03-10', 'felhasznalo'),
-(4, 'kissmaria', '456789', 'maria.kiss@example.c', '2025-04-05', 'felhasznalo'),
-(5, 'tothbela', '567890', 'bela.toth@example.co', '2025-05-12', 'felhasznalo'),
-(6, 'pektamas', '678901', 'tamas.pek@example.co', '2025-06-10', 'felhasznalo'),
-(7, 'baloghanita', '789012', 'anita.balogh@example', '2025-07-08', 'felhasznalo'),
-(8, 'farkasgergo', '890123', 'gergo.farkas@example', '2025-08-15', 'felhasznalo'),
-(9, 'molnarnora', '901234', 'nora.molnar@example.', '2025-09-03', 'felhasznalo'),
-(10, 'szilagyizoltan', '123789', 'zoltan.szilagyi@exam', '2025-10-22', 'admin'),
 (13, 'asasaaf', '$2b$10$ddXFuO/dH0GL1BXV6URaJuBw.Oi.0dw/YhKrejpb92f', 'bahfbaf@nasdja.hu', '2026-01-21', 'felhasznalo'),
 (14, 'ahahadb', '$2b$10$Qf2kEnZEet341Xy.aGxsW.LN8VHetj//AYb2EOa2aGY', 'jka@example.com', '2026-01-21', 'felhasznalo'),
 (15, 'péter', '$2b$10$Xvl3Z1A09Acf6O1Z6eCJoOogB5c3V7zbrV.7nF50bb84rcBeJQ8IC', 'peti@example.com', '2026-02-10', 'felhasznalo'),
 (16, 'Petyaa', '$2b$10$wa16UpW8GpWtAxGdda/vLeG/5JVM/Z8RZNfY.T/uzCtnJN53fIEVK', 'palpet478@hengersor.', '2026-02-24', 'felhasznalo'),
-(17, 'Alma', '$2b$10$DM8e3IvR09g42PhcN.UAMOBsGaLnq6MW0beKVjMp1MsgtoQI.FXCa', 'alma@gmail.com', '2026-02-24', 'felhasznalo');
+(17, 'Alma', '$2b$10$DM8e3IvR09g42PhcN.UAMOBsGaLnq6MW0beKVjMp1MsgtoQI.FXCa', 'alma@gmail.com', '2026-02-24', 'felhasznalo'),
+(18, 'tamas', '$2b$10$FANkhssMlN4L.m66nnR7xO16G3PwOjuZxNrzJp6RIbJfF5xiiJPxK', 'valami@example.com', '2026-02-26', 'felhasznalo');
 
 -- --------------------------------------------------------
 
@@ -184,7 +177,7 @@ INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_da
 
 CREATE TABLE `kommentek` (
   `komment_id` int(5) NOT NULL,
-  `felhasznalo_id` int(5) NOT NULL,
+  `felhasznalo_id` int(11) DEFAULT NULL,
   `etterem_id` int(5) NOT NULL,
   `megjegyzes` varchar(255) NOT NULL,
   `letrehoz_ido` datetime NOT NULL DEFAULT current_timestamp()
@@ -195,10 +188,10 @@ CREATE TABLE `kommentek` (
 --
 
 INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyzes`, `letrehoz_ido`) VALUES
-(1, 3, 1, 'Kiváló ízek és barátságos kiszolgálás.', '2026-02-23 10:13:38'),
-(2, 2, 3, 'Túl sokat kellett várni, de az étel finom volt.', '2026-02-23 10:13:38'),
-(3, 7, 5, 'Hangulatos hely, visszatérünk még.', '2026-02-23 10:13:38'),
-(4, 4, 2, 'Az adagok kicsik voltak, de ízletesek.', '2026-02-23 10:13:38');
+(1, NULL, 1, 'Kiváló ízek és barátságos kiszolgálás.', '2026-02-23 10:13:38'),
+(2, NULL, 3, 'Túl sokat kellett várni, de az étel finom volt.', '2026-02-23 10:13:38'),
+(3, NULL, 5, 'Hangulatos hely, visszatérünk még.', '2026-02-23 10:13:38'),
+(4, NULL, 2, 'Az adagok kicsik voltak, de ízletesek.', '2026-02-23 10:13:38');
 
 -- --------------------------------------------------------
 
@@ -281,7 +274,7 @@ ALTER TABLE `varosok`
 -- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
-  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT a táblához `kategoriak`
@@ -310,7 +303,7 @@ ALTER TABLE `kommentek`
 --
 ALTER TABLE `ertekelesek`
   ADD CONSTRAINT `ertekelesek_ibfk_1` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`),
-  ADD CONSTRAINT `fk_felhasznalo_id` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`);
+  ADD CONSTRAINT `fk_felhasznalo_id` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`) ON DELETE SET NULL;
 
 --
 -- Megkötések a táblához `ettermek`
@@ -329,7 +322,7 @@ ALTER TABLE `kepek`
 -- Megkötések a táblához `kommentek`
 --
 ALTER TABLE `kommentek`
-  ADD CONSTRAINT `kommentek_ibfk_1` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`),
+  ADD CONSTRAINT `kommentek_ibfk_1` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `kommentek_ibfk_2` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`);
 COMMIT;
 
