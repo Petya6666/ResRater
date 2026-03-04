@@ -88,21 +88,90 @@ app.get('/ertekeles/:id', (req, res) => {
 });
 
 //egy adott étterem kommentjeinek lekérése
-app.get('/kommentek', (req, res) => {
+app.get('/kommentek/:id', (req, res) => {
     const id = req.params.id;
-    const sql = 'SELECT kommentek.komment_id, ettermek.etterem_id, felhasznalok.felhasznev, kommentek.megjegyzes, kommentek.letrehoz_ido FROM kommentek INNER JOIN felhasznalok ON kommentek.felhasznalo_id = felhasznalok.felhasznalo_id INNER JOIN ettermek ON kommentek.etterem_id = ettermek.etterem_id WHERE ettermek.etterem_id = ?;';
+    const sql = 'SELECT kommentek.komment_id, ettermek.etterem_id, kommentek.felhasznalo_id, felhasznalok.felhasznev, kommentek.megjegyzes, kommentek.letrehoz_ido FROM kommentek INNER JOIN felhasznalok ON kommentek.felhasznalo_id = felhasznalok.felhasznalo_id INNER JOIN ettermek ON kommentek.etterem_id = ettermek.etterem_id WHERE ettermek.etterem_id = ? ORDER BY kommentek.letrehoz_ido DESC;';
 
     db.query(sql, [id], (err, result) => {
-        if (err) return res.json(err);
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
 
-
-        return res.json(result[0]); 
+        return res.json(result);
     });
 });
 
+// új komment létrehozása (bejelentkezett felhasználó)
+app.post('/kommentek', authenticateToken, (req, res) => {
+    const { etterem_id, megjegyzes } = req.body;
 
+    if (!etterem_id || !megjegyzes || typeof megjegyzes !== 'string' || megjegyzes.trim().length === 0) {
+        return res.status(400).json({ error: 'Étterem azonosító és megjegyzés kötelező.' });
+    }
 
+    const checkSql = 'SELECT komment_id FROM kommentek WHERE etterem_id = ? AND felhasznalo_id = ? LIMIT 1';
+    db.query(checkSql, [etterem_id, req.user.id], (checkErr, rows) => {
+        if (checkErr) {
+            console.error('Database error:', checkErr);
+            return res.status(500).json({ error: checkErr.message });
+        }
 
+        if (rows && rows.length > 0) {
+            return res.status(409).json({ error: 'Már írtál hozzászólást ehhez az étteremhez.' });
+        }
+
+        const sql = 'INSERT INTO kommentek (etterem_id, felhasznalo_id, megjegyzes) VALUES (?, ?, ?)';
+
+        db.query(sql, [etterem_id, req.user.id, megjegyzes.trim()], (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ error: err.message });
+            }
+
+            return res.status(201).json({
+                message: 'Komment létrehozva.',
+                komment_id: result.insertId
+            });
+        });
+    });
+});
+
+// komment törlése (csak a saját kommentje)
+app.delete('/kommentek/:kommentId', authenticateToken, (req, res) => {
+    const { kommentId } = req.params;
+
+    const selectSql = 'SELECT komment_id, felhasznalo_id FROM kommentek WHERE komment_id = ? LIMIT 1';
+    db.query(selectSql, [kommentId], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (!rows || rows.length === 0) {
+            return res.status(404).json({ error: 'Komment nem található.' });
+        }
+
+        const komment = rows[0];
+        if (Number(komment.felhasznalo_id) !== Number(req.user.id)) {
+            return res.status(403).json({ error: 'Nincs jogosultságod törölni ezt a kommentet.' });
+        }
+
+        const deleteSql = 'DELETE FROM kommentek WHERE komment_id = ?';
+        db.query(deleteSql, [kommentId], (delErr, delResult) => {
+            if (delErr) {
+                console.error('Database error:', delErr);
+                return res.status(500).json({ error: delErr.message });
+            }
+
+            if (!delResult || delResult.affectedRows === 0) {
+                return res.status(404).json({ error: 'Komment nem található.' });
+            }
+
+            return res.json({ message: 'Komment törölve.' });
+        });
+    });
+});
 
 //felhasználói regisztráció
 app.post('/register', async (req, res) => {
