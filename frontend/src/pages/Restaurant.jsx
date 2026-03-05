@@ -235,7 +235,7 @@ const Restaurant = () => {
                     </button>
                   </form>
                 ) : (
-                  <p className='text-muted'>Már írtál hozzászólást ehhez az étteremhez.</p>
+                  <p className='feher'>Már írtál hozzászólást ehhez az étteremhez.</p>
                 )}
 
                 {kommentLoading ? (
