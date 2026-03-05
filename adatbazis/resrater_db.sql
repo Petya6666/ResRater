@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Már 05. 11:27
+-- Létrehozás ideje: 2026. Már 05. 12:17
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -34,7 +34,7 @@ CREATE TABLE `ertekelesek` (
   `ertekeles_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
   `felhasznalo_id` int(11) DEFAULT NULL,
-  `atlag` tinyint(4) NOT NULL,
+  `atlag` decimal(4,2) DEFAULT NULL,
   `datum` datetime NOT NULL,
   `etelminoseg` int(5) NOT NULL,
   `kiszolgalas` int(5) NOT NULL,
@@ -46,17 +46,25 @@ CREATE TABLE `ertekelesek` (
 --
 
 INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atlag`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
-(1, 1, NULL, 5, '2025-11-01 12:00:00', 5, 3, 2),
-(2, 2, NULL, 2, '2025-11-02 13:00:00', 4, 2, 1),
-(3, 3, NULL, 4, '2025-11-03 14:00:00', 1, 5, 3),
-(4, 4, NULL, 3, '2025-11-04 15:00:00', 4, 2, 5),
-(5, 5, NULL, 5, '2025-11-05 16:00:00', 4, 5, 3),
-(6, 6, NULL, 1, '2025-11-06 17:00:00', 1, 3, 5),
-(7, 7, NULL, 4, '2025-11-07 18:00:00', 5, 4, 3),
-(8, 8, NULL, 2, '2025-11-08 19:00:00', 2, 4, 4),
-(9, 9, NULL, 5, '2025-11-09 20:00:00', 3, 5, 5),
-(10, 10, NULL, 3, '2025-11-10 21:00:00', 5, 4, 5),
-(11, 4, 15, 4, '2026-03-05 11:15:58', 5, 2, 5);
+(1, 1, NULL, 3.00, '2025-11-01 12:00:00', 5, 3, 2),
+(2, 2, NULL, 2.00, '2025-11-02 13:00:00', 4, 2, 1),
+(3, 3, NULL, 3.00, '2025-11-03 14:00:00', 1, 5, 3),
+(4, 4, NULL, 4.00, '2025-11-04 15:00:00', 4, 2, 5),
+(5, 5, NULL, 4.00, '2025-11-05 16:00:00', 4, 5, 3),
+(6, 6, NULL, 3.00, '2025-11-06 17:00:00', 1, 3, 5),
+(7, 7, NULL, 4.00, '2025-11-07 18:00:00', 5, 4, 3),
+(8, 8, NULL, 3.00, '2025-11-08 19:00:00', 2, 4, 4),
+(9, 9, NULL, 4.00, '2025-11-09 20:00:00', 3, 5, 5),
+(10, 10, NULL, 5.00, '2025-11-10 21:00:00', 5, 4, 5),
+(11, 4, 15, 4.00, '2026-03-05 11:15:58', 5, 2, 5),
+(12, 1, 13, 4.00, '2026-03-05 11:58:30', 5, 4, 3),
+(13, 1, 15, 4.00, '2026-03-05 11:59:22', 5, 4, 3),
+(14, 1, 16, 4.00, '2026-03-05 12:02:49', 5, 4, 4),
+(15, 8, 14, 4.00, '2026-03-05 12:04:09', 5, 4, 4),
+(16, 7, 16, 4.00, '2026-03-05 12:05:42', 5, 4, 4),
+(17, 8, 14, 4.00, '2026-03-05 12:08:22', 5, 4, 4),
+(18, 7, 17, 4.00, '2026-03-05 12:10:44', 5, 4, 4),
+(19, 1, 16, 3.33, '2026-03-05 12:11:44', 2, 4, 4);
 
 --
 -- Eseményindítók `ertekelesek`
@@ -65,7 +73,17 @@ DROP TRIGGER IF EXISTS `trig_atlagszamitas`;
 DELIMITER $$
 CREATE TRIGGER `trig_atlagszamitas` BEFORE UPDATE ON `ertekelesek` FOR EACH ROW BEGIN
     SET NEW.atlag = ROUND(
-        (NEW.etelminoseg + NEW.kiszolgalas + NEW.hangulat) / 3
+        (NEW.etelminoseg + NEW.kiszolgalas + NEW.hangulat) / 3,2
+    );
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `trig_ertekeles_atlag_insert`;
+DELIMITER $$
+CREATE TRIGGER `trig_ertekeles_atlag_insert` BEFORE INSERT ON `ertekelesek` FOR EACH ROW BEGIN
+    SET NEW.atlag = ROUND(
+        (NEW.etelminoseg + NEW.kiszolgalas + NEW.hangulat) / 3,
+        2
     );
 END
 $$
@@ -290,6 +308,12 @@ ALTER TABLE `varosok`
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
 --
+
+--
+-- AUTO_INCREMENT a táblához `ertekelesek`
+--
+ALTER TABLE `ertekelesek`
+  MODIFY `ertekeles_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT a táblához `felhasznalok`
