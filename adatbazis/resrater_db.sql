@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Feb 26. 12:42
+-- Létrehozás ideje: 2026. Már 05. 11:27
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -29,6 +29,7 @@ USE `resrater_db`;
 -- Tábla szerkezet ehhez a táblához `ertekelesek`
 --
 
+DROP TABLE IF EXISTS `ertekelesek`;
 CREATE TABLE `ertekelesek` (
   `ertekeles_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
@@ -45,16 +46,30 @@ CREATE TABLE `ertekelesek` (
 --
 
 INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atlag`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
-(1, 1, NULL, 5, '2025-11-01 12:00:00', 1, 1, 1),
-(2, 2, NULL, 2, '2025-11-02 13:00:00', 2, 2, 2),
-(3, 3, NULL, 4, '2025-11-03 14:00:00', 3, 3, 3),
-(4, 4, NULL, 3, '2025-11-04 15:00:00', 4, 4, 4),
-(5, 5, NULL, 5, '2025-11-05 16:00:00', 5, 5, 5),
-(6, 6, NULL, 1, '2025-11-06 17:00:00', 6, 6, 6),
-(7, 7, NULL, 4, '2025-11-07 18:00:00', 7, 7, 7),
-(8, 8, NULL, 2, '2025-11-08 19:00:00', 8, 8, 8),
-(9, 9, NULL, 5, '2025-11-09 20:00:00', 9, 9, 9),
-(10, 10, NULL, 3, '2025-11-10 21:00:00', 10, 10, 10);
+(1, 1, NULL, 5, '2025-11-01 12:00:00', 5, 3, 2),
+(2, 2, NULL, 2, '2025-11-02 13:00:00', 4, 2, 1),
+(3, 3, NULL, 4, '2025-11-03 14:00:00', 1, 5, 3),
+(4, 4, NULL, 3, '2025-11-04 15:00:00', 4, 2, 5),
+(5, 5, NULL, 5, '2025-11-05 16:00:00', 4, 5, 3),
+(6, 6, NULL, 1, '2025-11-06 17:00:00', 1, 3, 5),
+(7, 7, NULL, 4, '2025-11-07 18:00:00', 5, 4, 3),
+(8, 8, NULL, 2, '2025-11-08 19:00:00', 2, 4, 4),
+(9, 9, NULL, 5, '2025-11-09 20:00:00', 3, 5, 5),
+(10, 10, NULL, 3, '2025-11-10 21:00:00', 5, 4, 5),
+(11, 4, 15, 4, '2026-03-05 11:15:58', 5, 2, 5);
+
+--
+-- Eseményindítók `ertekelesek`
+--
+DROP TRIGGER IF EXISTS `trig_atlagszamitas`;
+DELIMITER $$
+CREATE TRIGGER `trig_atlagszamitas` BEFORE UPDATE ON `ertekelesek` FOR EACH ROW BEGIN
+    SET NEW.atlag = ROUND(
+        (NEW.etelminoseg + NEW.kiszolgalas + NEW.hangulat) / 3
+    );
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -62,6 +77,7 @@ INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atla
 -- Tábla szerkezet ehhez a táblához `ettermek`
 --
 
+DROP TABLE IF EXISTS `ettermek`;
 CREATE TABLE `ettermek` (
   `etterem_id` int(11) NOT NULL,
   `nev` varchar(100) NOT NULL,
@@ -94,6 +110,7 @@ INSERT INTO `ettermek` (`etterem_id`, `nev`, `telefon`, `leiras`, `kategoria_id`
 -- Tábla szerkezet ehhez a táblához `felhasznalok`
 --
 
+DROP TABLE IF EXISTS `felhasznalok`;
 CREATE TABLE `felhasznalok` (
   `felhasznalo_id` int(10) NOT NULL,
   `felhasznev` varchar(25) NOT NULL,
@@ -121,6 +138,7 @@ INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `
 -- Tábla szerkezet ehhez a táblához `kategoriak`
 --
 
+DROP TABLE IF EXISTS `kategoriak`;
 CREATE TABLE `kategoriak` (
   `kategoria_id` int(5) NOT NULL,
   `kategoria_nev` varchar(30) NOT NULL
@@ -144,6 +162,7 @@ INSERT INTO `kategoriak` (`kategoria_id`, `kategoria_nev`) VALUES
 -- Tábla szerkezet ehhez a táblához `kepek`
 --
 
+DROP TABLE IF EXISTS `kepek`;
 CREATE TABLE `kepek` (
   `kep_id` int(11) NOT NULL,
   `etterem_id` int(11) NOT NULL,
@@ -175,6 +194,7 @@ INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_da
 -- Tábla szerkezet ehhez a táblához `kommentek`
 --
 
+DROP TABLE IF EXISTS `kommentek`;
 CREATE TABLE `kommentek` (
   `komment_id` int(5) NOT NULL,
   `felhasznalo_id` int(11) DEFAULT NULL,
@@ -199,6 +219,7 @@ INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyz
 -- Tábla szerkezet ehhez a táblához `varosok`
 --
 
+DROP TABLE IF EXISTS `varosok`;
 CREATE TABLE `varosok` (
   `iranyitoszam` int(4) NOT NULL,
   `varos` varchar(100) NOT NULL
