@@ -94,7 +94,27 @@ h2{
     cursor: pointer;
     font-family: 'Dela Gothic One', sans-serif;
 }
-
+.dobozcomment{ 
+    
+    border-radius: 10px;
+    height: auto;
+    width: 1000px;
+    margin: 70px auto;
+    padding: 80px;
+    color: white;
+    background-color: #7a1919;
+    font-family: 'Dela Gothic One', sans-serif;
+}
+.submit-gomb{
+    background-color: #ffffff;
+    color: #7a1919;
+    font-weight: bold;
+    border: none;
+    padding: 10px 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Dela Gothic One', sans-serif;
+}
 
 
 

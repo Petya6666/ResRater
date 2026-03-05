@@ -209,7 +209,7 @@ const Restaurant = () => {
               
             </div>
           </div>
-          <div className='mb-4'>
+          <div className=' dobozcomment mb-4'>
                 <h5>Hozzászólások:</h5>
 
                 {!userAlreadyCommented ? (
@@ -230,7 +230,7 @@ const Restaurant = () => {
                     {kuldesError && <div className='text-danger mb-2'>{kuldesError}</div>}
                     {kuldesSuccess && <div className='text-success mb-2'>{kuldesSuccess}</div>}
 
-                    <button className='btn btn-primary' type='submit' disabled={kuldesLoading}>
+                    <button className='submit-gomb ' type='submit' disabled={kuldesLoading}>
                       {kuldesLoading ? 'Küldés...' : 'Küldés'}
                     </button>
                   </form>
@@ -253,7 +253,7 @@ const Restaurant = () => {
                           </div>
                           {currentUserId != null && Number(komment.felhasznalo_id) === Number(currentUserId) && (
                             <button
-                              className='btn btn-sm btn-outline-danger'
+                              className=' btn btn-sm btn-outline-danger'
                               type='button'
                               onClick={() => handleKommentTorles(komment.komment_id)}
                               disabled={torlesLoadingId === komment.komment_id}
