@@ -44,7 +44,21 @@ app.get('/users', (req, res) => {
 
 //étteremkereső oldal api
 app.get('/browserettermek', (req, res) => {
-    const sql = 'SELECT ettermek.etterem_id, ettermek.nev, ettermek.iranyitoszam, varosok.varos, ertekelesek.atlag, kepek.fajl_nev FROM ettermek INNER JOIN kepek ON ettermek.etterem_id = kepek.etterem_id INNER JOIN ertekelesek ON ettermek.etterem_id = ertekelesek.etterem_id INNER JOIN varosok ON ettermek.iranyitoszam = varosok.iranyitoszam;';
+    // One row / restaurant (avoid duplicates from multiple ratings/images)
+    const sql = `
+        SELECT
+            e.etterem_id,
+            e.nev,
+            e.iranyitoszam,
+            v.varos,
+            ROUND(AVG(er.atlag), 2) AS atlag,
+            MIN(k.fajl_nev) AS fajl_nev
+        FROM ettermek e
+        INNER JOIN varosok v ON e.iranyitoszam = v.iranyitoszam
+        LEFT JOIN ertekelesek er ON e.etterem_id = er.etterem_id
+        LEFT JOIN kepek k ON e.etterem_id = k.etterem_id
+        GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos
+    `;
     db.query(sql, (err, result) => {
         if (err) return res.json(err); 
         return res.json(result)
@@ -84,6 +98,116 @@ app.get('/ertekeles/:id', (req, res) => {
         }
 
         return res.json(result[0]); 
+    });
+});
+
+// Értékelés összesítés + saját értékelés lekérése (ha be van jelentkezve)
+app.get('/ertekelesek/osszefoglalo/:etteremId', (req, res) => {
+    const { etteremId } = req.params;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    const getUserIdFromToken = () => {
+        if (!token) return null;
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            return decoded?.id ?? null;
+        } catch {
+            return null;
+        }
+    };
+
+    const userId = getUserIdFromToken();
+
+    const aggSql = `
+        SELECT
+            ROUND(AVG(atlag), 2) AS atlag,
+            ROUND(AVG(etelminoseg), 2) AS etelminoseg,
+            ROUND(AVG(kiszolgalas), 2) AS kiszolgalas,
+            ROUND(AVG(hangulat), 2) AS hangulat,
+            COUNT(*) AS db
+        FROM ertekelesek
+        WHERE etterem_id = ?
+    `;
+
+    db.query(aggSql, [etteremId], (aggErr, aggRows) => {
+        if (aggErr) {
+            console.error('Database error:', aggErr);
+            return res.status(500).json({ error: aggErr.message });
+        }
+
+        const agg = aggRows?.[0] ?? { atlag: null, etelminoseg: null, kiszolgalas: null, hangulat: null, db: 0 };
+
+        if (!userId) {
+            return res.json({ osszesitett: agg, sajat: null });
+        }
+
+        const ownSql = `
+            SELECT ertekeles_id, etelminoseg, kiszolgalas, hangulat, atlag, datum
+            FROM ertekelesek
+            WHERE etterem_id = ? AND felhasznalo_id = ?
+            ORDER BY datum DESC
+            LIMIT 1
+        `;
+        db.query(ownSql, [etteremId, userId], (ownErr, ownRows) => {
+            if (ownErr) {
+                console.error('Database error:', ownErr);
+                return res.status(500).json({ error: ownErr.message });
+            }
+            return res.json({ osszesitett: agg, sajat: ownRows?.[0] ?? null });
+        });
+    });
+});
+
+// Saját értékelés mentése (új vagy módosítás)
+app.post('/ertekelesek', authenticateToken, (req, res) => {
+    const { etterem_id, etelminoseg, kiszolgalas, hangulat } = req.body;
+
+    const toInt = (v) => Number.parseInt(v, 10);
+    const e = toInt(etelminoseg);
+    const k = toInt(kiszolgalas);
+    const h = toInt(hangulat);
+
+    if (!etterem_id) return res.status(400).json({ error: 'Étterem azonosító kötelező.' });
+    if (![e, k, h].every((n) => Number.isInteger(n) && n >= 1 && n <= 5)) {
+        return res.status(400).json({ error: 'Minden értékelés 1 és 5 közötti egész szám kell legyen.' });
+    }
+
+    const atlag = Number(((e + k + h) / 3).toFixed(2));
+
+    const checkSql = 'SELECT ertekeles_id FROM ertekelesek WHERE etterem_id = ? AND felhasznalo_id = ? LIMIT 1';
+    db.query(checkSql, [etterem_id, req.user.id], (checkErr, rows) => {
+        if (checkErr) {
+            console.error('Database error:', checkErr);
+            return res.status(500).json({ error: checkErr.message });
+        }
+
+        if (rows && rows.length > 0) {
+            const updateSql = `
+                UPDATE ertekelesek
+                SET etelminoseg = ?, kiszolgalas = ?, hangulat = ?, atlag = ?, datum = NOW()
+                WHERE ertekeles_id = ?
+            `;
+            return db.query(updateSql, [e, k, h, atlag, rows[0].ertekeles_id], (uErr) => {
+                if (uErr) {
+                    console.error('Database error:', uErr);
+                    return res.status(500).json({ error: uErr.message });
+                }
+                return res.json({ message: 'Értékelés frissítve.', atlag });
+            });
+        }
+
+        const insertSql = `
+            INSERT INTO ertekelesek (etterem_id, felhasznalo_id, atlag, datum, etelminoseg, kiszolgalas, hangulat)
+            VALUES (?, ?, ?, NOW(), ?, ?, ?)
+        `;
+        db.query(insertSql, [etterem_id, req.user.id, atlag, e, k, h], (iErr, result) => {
+            if (iErr) {
+                console.error('Database error:', iErr);
+                return res.status(500).json({ error: iErr.message });
+            }
+            return res.status(201).json({ message: 'Értékelés mentve.', ertekeles_id: result.insertId, atlag });
+        });
     });
 });
 

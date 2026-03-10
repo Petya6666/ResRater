@@ -20,6 +20,15 @@ const Restaurant = () => {
   const [error, setError] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
 
+  // ratings
+  const [ratingLoading, setRatingLoading] = useState(false);
+  const [ratingError, setRatingError] = useState(null);
+  const [ratingSuccess, setRatingSuccess] = useState(null);
+  const [ratingSummary, setRatingSummary] = useState(null); // { osszesitett, sajat }
+  const [etelminoseg, setEtelminoseg] = useState(0);
+  const [kiszolgalas, setKiszolgalas] = useState(0);
+  const [hangulat, setHangulat] = useState(0);
+
   useEffect(() => {
     const fetchEtterem = async () => {
       try {
@@ -35,6 +44,31 @@ const Restaurant = () => {
 
     fetchEtterem();
   }, [id]);
+
+  const fetchRatings = async () => {
+    setRatingError(null);
+    try {
+      const token = localStorage.getItem('token');
+      const result = await axios.get(`http://localhost:3000/ertekelesek/osszefoglalo/${id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
+      setRatingSummary(result.data);
+      const own = result?.data?.sajat;
+      if (own) {
+        setEtelminoseg(Number(own.etelminoseg) || 0);
+        setKiszolgalas(Number(own.kiszolgalas) || 0);
+        setHangulat(Number(own.hangulat) || 0);
+      } else {
+        setEtelminoseg(0);
+        setKiszolgalas(0);
+        setHangulat(0);
+      }
+    } catch (e) {
+      console.error('Hiba az értékelések lekérése során:', e);
+      setRatingError('Nem sikerült betölteni az értékeléseket');
+      setRatingSummary(null);
+    }
+  };
 
   useEffect(() => {
     const fetchKommentek = async () => {
@@ -69,7 +103,8 @@ const Restaurant = () => {
         });
         setCurrentUserId(result?.data?.id ?? null);
       } catch {
-        // invalid/expired token
+        // invalid/expired token -> clear so we don't keep getting 403
+        localStorage.removeItem('token');
         setCurrentUserId(null);
       }
     };
@@ -77,9 +112,88 @@ const Restaurant = () => {
     fetchCurrentUser();
   }, []);
 
+  useEffect(() => {
+    if (id) fetchRatings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, currentUserId]);
+
   const refreshKommentek = async () => {
     const result = await axios.get(`http://localhost:3000/kommentek/${id}`);
     setKommentek(Array.isArray(result.data) ? result.data : []);
+  };
+
+  const renderStars = (value, onChange) => {
+    const stars = [1, 2, 3, 4, 5];
+    return (
+      <div className='d-flex gap-1' aria-label='Csillagos értékelés'>
+        {stars.map((s) => (
+          <button
+            key={s}
+            type='button'
+            className='btn btn-sm'
+            onClick={() => onChange(s)}
+            style={{
+              padding: 0,
+              lineHeight: 1,
+              border: 'none',
+              background: 'transparent',
+              fontSize: '1.4rem',
+              cursor: 'pointer',
+              color: s <= value ? '#f5c518' : '#c7c7c7'
+            }}
+            title={`${s} / 5`}
+          >
+            ★
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const handleRatingSubmit = async (e) => {
+    e.preventDefault();
+    setRatingError(null);
+    setRatingSuccess(null);
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setRatingError('Értékeléshez be kell jelentkezni.');
+      return;
+    }
+    if (![etelminoseg, kiszolgalas, hangulat].every((n) => Number(n) >= 1 && Number(n) <= 5)) {
+      setRatingError('Minden kategóriát 1 és 5 között értékelj.');
+      return;
+    }
+
+    try {
+      setRatingLoading(true);
+      await axios.post(
+        'http://localhost:3000/ertekelesek',
+        {
+          etterem_id: Number(id),
+          etelminoseg: Number(etelminoseg),
+          kiszolgalas: Number(kiszolgalas),
+          hangulat: Number(hangulat)
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setRatingSuccess('Értékelés elmentve.');
+      await fetchRatings();
+    } catch (err) {
+      console.error('Hiba az értékelés mentése során:', err);
+
+      if (err?.response?.status === 401 || err?.response?.status === 403) {
+        localStorage.removeItem('token');
+        setCurrentUserId(null);
+        setRatingError('A bejelentkezés lejárt vagy érvénytelen. Jelentkezz be újra.');
+        return;
+      }
+
+      const msg = err?.response?.data?.error || 'Nem sikerült elmenteni az értékelést';
+      setRatingError(msg);
+    } finally {
+      setRatingLoading(false);
+    }
   };
 
   const handleKommentKuldes = async (e) => {
@@ -146,8 +260,6 @@ const Restaurant = () => {
     currentUserId != null &&
     kommentek.some((k) => Number(k.felhasznalo_id) === Number(currentUserId));
 
-
-
   if (error || !etterem) {
     return (
       <>
@@ -209,6 +321,49 @@ const Restaurant = () => {
               
             </div>
           </div>
+
+          {/* Rating block (above comments) */}
+          <div className='dobozcomment mb-4'>
+            <h5>Értékelés:</h5>
+
+            {ratingSummary?.osszesitett && (
+              <div className='mb-3'>
+                <div className='d-flex flex-wrap gap-3'>
+                  <div><strong>Átlag:</strong> {ratingSummary.osszesitett.atlag ?? '—'} ({ratingSummary.osszesitett.db ?? 0} db)</div>
+                  <div><strong>Étel:</strong> {ratingSummary.osszesitett.etelminoseg ?? '—'}</div>
+                  <div><strong>Kiszolgálás:</strong> {ratingSummary.osszesitett.kiszolgalas ?? '—'}</div>
+                  <div><strong>Hangulat:</strong> {ratingSummary.osszesitett.hangulat ?? '—'}</div>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleRatingSubmit}>
+              <div className='mb-2'>
+                <label className='form-label d-block'>Étel minőség</label>
+                {renderStars(etelminoseg, setEtelminoseg)}
+              </div>
+              <div className='mb-2'>
+                <label className='form-label d-block'>Kiszolgálás</label>
+                {renderStars(kiszolgalas, setKiszolgalas)}
+              </div>
+              <div className='mb-3'>
+                <label className='form-label d-block'>Hangulat</label>
+                {renderStars(hangulat, setHangulat)}
+              </div>
+
+              {ratingError && <div className='text-danger mb-2'>{ratingError}</div>}
+              {ratingSuccess && <div className='text-success mb-2'>{ratingSuccess}</div>}
+
+              <button className='submit-gomb' type='submit' disabled={ratingLoading}>
+                {ratingLoading ? 'Mentés...' : 'Értékelés mentése'}
+              </button>
+            </form>
+
+            {ratingError == null && ratingSummary == null && (
+              <div className='mt-2'>Értékelések betöltése...</div>
+            )}
+          </div>
+
           <div className=' dobozcomment mb-4'>
                 <h5>Hozzászólások:</h5>
 
