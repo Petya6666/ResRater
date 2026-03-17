@@ -65,6 +65,47 @@ app.get('/browserettermek', (req, res) => {
     });
 });
 
+// Restaurant search (name/city)
+// GET /ettermek/search?q=...
+app.get('/ettermek/search', (req, res) => {
+    const q = (req.query.q ?? '').toString().trim();
+
+    // If no query provided, return the full list (same as /browserettermek)
+    const baseSql = `
+        SELECT
+            e.etterem_id,
+            e.nev,
+            e.iranyitoszam,
+            v.varos,
+            ROUND(AVG(er.atlag), 2) AS atlag,
+            MIN(k.fajl_nev) AS fajl_nev
+        FROM ettermek e
+        INNER JOIN varosok v ON e.iranyitoszam = v.iranyitoszam
+        LEFT JOIN ertekelesek er ON e.etterem_id = er.etterem_id
+        LEFT JOIN kepek k ON e.etterem_id = k.etterem_id
+    `;
+
+    const whereSql = q.length > 0 ? `WHERE (e.nev LIKE ? OR v.varos LIKE ?)` : '';
+
+    const groupSql = `
+        GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos
+        ORDER BY e.nev ASC
+    `;
+
+    const sql = `${baseSql}\n${whereSql}\n${groupSql}`;
+
+    const like = `%${q}%`;
+    const params = q.length > 0 ? [like, like] : [];
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(result);
+    });
+});
+
 //egy adott étterem minden adatának lekérése
 app.get('/etterem/:id', (req, res) => {
     const id = req.params.id;

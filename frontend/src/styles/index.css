@@ -118,6 +118,31 @@ h2{
 .feher{
     color: white !important;
 }
+/* Restaurants page */
+.restaurants-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.restaurants-search {
+    max-width: 360px;
+    background-color: #7a1919;
+    color: white;
+    border-color: #7a1919;
+}
+
+.restaurants-search::placeholder {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.restaurants-search:focus {
+    background-color: #7a1919;
+    color: white;
+    border-color: #7a1919;
+    box-shadow: 0 0 0 0.25rem rgba(122, 25, 25, 0.35);
+}
 
 
 

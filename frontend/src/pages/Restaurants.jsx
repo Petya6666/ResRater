@@ -1,23 +1,29 @@
 import React from 'react'
 import Header from '../components/Header.jsx'
-import { useState, useEffect } from 'react';    
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/index.css';
 
 const Restaurants = () => {
  const [ettermek,setettermek]=useState([]);
+ const [query, setQuery] = useState('');
+ const [loading, setLoading] = useState(false);
  const navigate = useNavigate();
 
  useEffect(() => {
-  const fetchAllEttermek = async () => {
+  const fetchEttermek = async () => {
+    setLoading(true);
     try {
-      const result = await axios.get('http://localhost:3000/browserettermek');
-      console.log('Ettermek data:', result.data); // Debug log
+      const endpoint = query.trim().length > 0
+        ? `http://localhost:3000/ettermek/search?q=${encodeURIComponent(query.trim())}`
+        : 'http://localhost:3000/browserettermek';
+
+      const result = await axios.get(endpoint);
 
       const updatedData = result.data.map(etterem => ({
         ...etterem,
-        url: etterem.fajl_nev.startsWith('kepek/')
+        url: typeof etterem.fajl_nev === 'string' && etterem.fajl_nev.startsWith('kepek/')
           ? `http://localhost:3000/${etterem.fajl_nev}`
           : `http://localhost:3000/kepek/${etterem.fajl_nev}`
       }));
@@ -25,11 +31,14 @@ const Restaurants = () => {
       setettermek(updatedData);
     } catch (error) {
       console.error('Hiba az éttermek lekérése során:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  fetchAllEttermek();
-}, []);
+  const t = setTimeout(fetchEttermek, 300); 
+  return () => clearTimeout(t);
+}, [query]);
 
   const handleCardClick = (etterem) => {
     console.log('Clicked restaurant:', etterem); 
@@ -40,8 +49,20 @@ const Restaurants = () => {
     <>
       <Header />
       <div className='container mt-4'>
-        <h2 className='mb-4'>Éttermek</h2>
-        {ettermek.length === 0 && <p>Nincsenek éttermek...</p>}
+        <div className='restaurants-header mb-3'>
+          <h2 className='mb-0'>Éttermek</h2>
+          <input
+            className='form-control restaurants-search'
+            type='search'
+            placeholder='Keresés (név vagy város)'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+
+        {loading && <p>Keresés...</p>}
+        {!loading && ettermek.length === 0 && <p>Nincsenek éttermek...</p>}
+
         <div className='row'>
           {ettermek.map((etterem) => (
             <div key={etterem.etterem_id} className='col-md-4 mb-4'>
