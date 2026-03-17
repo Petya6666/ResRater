@@ -6,6 +6,7 @@ import Restaurant from './pages/Restaurant.jsx'
 import Register from './pages/Register.jsx'
 import Login from './pages/Login.jsx'
 import Profile from './pages/Profile.jsx';
+import NewRestaurant from './pages/NewRestaurant.jsx';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -18,6 +19,7 @@ function App() {
        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/new-restaurant" element={<NewRestaurant />} />
           <Route path="/restaurant/:id" element={<Restaurant />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

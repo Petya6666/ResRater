@@ -6,10 +6,35 @@ const mysql = require('mysql2');
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = 'very_secret_key'; // move to .env later
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
 
 app.use(cors());
 app.use(express.json());
 app.use('/kepek', express.static('uploads'));
+
+// Multer beállítás képek feltöltéséhez
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads'),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname || '').toLowerCase();
+        const safeBase = path
+            .basename(file.originalname || 'image', ext)
+            .replace(/[^a-z0-9-_]/gi, '_')
+            .slice(0, 60);
+        cb(null, `${Date.now()}_${safeBase}${ext || '.png'}`);
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        const allowed = ['image/png', 'image/jpeg', 'image/webp'];
+        if (allowed.includes(file.mimetype)) return cb(null, true);
+        return cb(new Error('Csak PNG/JPG/WEBP képfájl engedélyezett.'));
+    }
+});
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -512,6 +537,113 @@ app.get('/me', authenticateToken, (req, res) => {
     res.json({
         id: req.user.id,
         felhasznev: req.user.felhasznev
+    });
+});
+
+// --- Segéd endpointok az új étterem űrlaphoz ---
+// Városok listája (irányítószám + város)
+app.get('/varosok', (req, res) => {
+    const sql = 'SELECT iranyitoszam, varos FROM varosok ORDER BY varos ASC';
+    db.query(sql, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(rows);
+    });
+});
+
+// Kategóriák listája
+app.get('/kategoriak', (req, res) => {
+    const sql = 'SELECT kategoria_id, kategoria_nev FROM kategoriak ORDER BY kategoria_nev ASC';
+    db.query(sql, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(rows);
+    });
+});
+
+// Kép feltöltés (bejelentkezést igényel)
+// POST /kepek/upload (multipart/form-data, field: image)
+app.post('/kepek/upload', authenticateToken, upload.single('image'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'Nincs feltöltött fájl.' });
+
+    // egységesen úgy tároljuk, ahogy az app többi része is kezeli
+    const filePath = `kepek/${req.file.filename}`;
+    return res.status(201).json({ message: 'Kép feltöltve.', fajl_nev: filePath });
+});
+
+// ---- Új étterem létrehozása (bejelentkezést igényel) ----
+// POST /ettermek
+// body: { nev, telefon, leiras, iranyitoszam, kategoria_id?, kepFajlNev? }
+app.post('/ettermek', authenticateToken, (req, res) => {
+    const { nev, telefon, leiras, iranyitoszam, kategoria_id, kepFajlNev } = req.body;
+
+    if (!nev || typeof nev !== 'string' || nev.trim().length < 2) {
+        return res.status(400).json({ error: 'Az étterem neve kötelező (min. 2 karakter).' });
+    }
+
+    if (!telefon || typeof telefon !== 'string' || telefon.trim().length < 5) {
+        return res.status(400).json({ error: 'Telefonszám kötelező.' });
+    }
+
+    const zip = Number.parseInt(iranyitoszam, 10);
+    if (!Number.isInteger(zip) || zip < 1000 || zip > 9999) {
+        return res.status(400).json({ error: 'Érvénytelen irányítószám.' });
+    }
+
+    const katId = (kategoria_id === null || kategoria_id === undefined || kategoria_id === '')
+        ? null
+        : Number.parseInt(kategoria_id, 10);
+
+    if (katId !== null && !Number.isInteger(katId)) {
+        return res.status(400).json({ error: 'Érvénytelen kategória.' });
+    }
+
+    const desc = (typeof leiras === 'string' ? leiras.trim() : '').slice(0, 2000);
+
+    // 1) város létezés ellenőrzése
+    db.query('SELECT iranyitoszam FROM varosok WHERE iranyitoszam = ? LIMIT 1', [zip], (zipErr, zipRows) => {
+        if (zipErr) {
+            console.error('Database error:', zipErr);
+            return res.status(500).json({ error: zipErr.message });
+        }
+        if (!zipRows || zipRows.length === 0) {
+            return res.status(400).json({ error: 'Ismeretlen irányítószám (nincs a varosok táblában).' });
+        }
+
+        // 2) étterem beszúrás
+        const insertSql = `
+            INSERT INTO ettermek (nev, telefon, leiras, iranyitoszam, kategoria_id)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+
+        db.query(insertSql, [nev.trim(), telefon.trim(), desc.length ? desc : null, zip, katId], (insErr, insResult) => {
+            if (insErr) {
+                console.error('Database error:', insErr);
+                return res.status(500).json({ error: insErr.message });
+            }
+
+            const etteremId = insResult.insertId;
+
+            // 3) opcionális kép rögzítése
+            // kepFajlNev érkezhet pl. 'kepek/valami.png' formában a /kepek/upload válaszából
+            if (kepFajlNev && typeof kepFajlNev === 'string' && kepFajlNev.trim().length > 0) {
+                const fileName = kepFajlNev.trim().startsWith('kepek/') ? kepFajlNev.trim() : `kepek/${kepFajlNev.trim()}`;
+                const kepSql = 'INSERT INTO kepek (etterem_id, fajl_nev) VALUES (?, ?)';
+                return db.query(kepSql, [etteremId, fileName], (kErr) => {
+                    if (kErr) {
+                        console.error('Database error:', kErr);
+                        return res.status(201).json({ message: 'Étterem létrehozva, de a kép mentése nem sikerült.', etterem_id: etteremId });
+                    }
+                    return res.status(201).json({ message: 'Étterem sikeresen létrehozva.', etterem_id: etteremId });
+                });
+            }
+
+            return res.status(201).json({ message: 'Étterem sikeresen létrehozva.', etterem_id: etteremId });
+        });
     });
 });
 

@@ -36,6 +36,7 @@ const Header = () => {
                 <Nav className="me-auto">
                     <Nav.Link className='colors' href="/">Kezdőlap</Nav.Link>
                     <Nav.Link className='colors' href="/restaurants">Éttermek</Nav.Link>
+                    <Nav.Link className='colors' href="/new-restaurant">Új étterem</Nav.Link>
                 </Nav>
                 <Navbar.Brand className='loginpic' onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
                     <img
