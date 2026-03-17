@@ -1,2 +1,5 @@
 mestermunka teendők:
 
+adatbazis:
+ettermek primary key auto increment
+csinald meg hogy on delete cascade vagy mi (ha törölsz éttermet akkor a tőle függő adatok törlődjenek)
