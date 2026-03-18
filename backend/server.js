@@ -540,7 +540,7 @@ app.get('/me', authenticateToken, (req, res) => {
     });
 });
 
-// --- Segéd endpointok az új étterem űrlaphoz ---
+//  Segéd endpointok az új étterem űrlaphoz 
 // Városok listája (irányítószám + város)
 app.get('/varosok', (req, res) => {
     const sql = 'SELECT iranyitoszam, varos FROM varosok ORDER BY varos ASC';
@@ -566,7 +566,6 @@ app.get('/kategoriak', (req, res) => {
 });
 
 // Kép feltöltés (bejelentkezést igényel)
-// POST /kepek/upload (multipart/form-data, field: image)
 app.post('/kepek/upload', authenticateToken, upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Nincs feltöltött fájl.' });
 
@@ -575,8 +574,7 @@ app.post('/kepek/upload', authenticateToken, upload.single('image'), (req, res) 
     return res.status(201).json({ message: 'Kép feltöltve.', fajl_nev: filePath });
 });
 
-// ---- Új étterem létrehozása (bejelentkezést igényel) ----
-// POST /ettermek
+//  Új étterem létrehozása (bejelentkezés kell hozzá) 
 // body: { nev, telefon, leiras, iranyitoszam, kategoria_id?, kepFajlNev? }
 app.post('/ettermek', authenticateToken, (req, res) => {
     const { nev, telefon, leiras, iranyitoszam, kategoria_id, kepFajlNev } = req.body;
