@@ -211,9 +211,9 @@ const NewRestaurant = () => {
       <Header />
       <div className='container mt-4 d-flex justify-content-center'>
         <div style={{ maxWidth: "900px", width: "100%" }}>
-          <button className='piros mb-3' onClick={() => navigate("/restaurants")}>← Vissza</button>
+          <button className='piros mb-3 ' onClick={() => navigate("/restaurants")}>← Vissza</button>
 
-          <div className='dobozcomment'>
+          <div className='doboz'>
             <h2 className='mb-3'>Új étterem hozzáadása</h2>
 
             {loadingLists ? (

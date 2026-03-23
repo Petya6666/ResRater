@@ -50,7 +50,7 @@ const Restaurants = () => {
       <Header />
       <div className='container mt-4'>
         <div className='restaurants-header mb-3'>
-          <h2 className='mb-0'>Éttermek</h2>
+          <h2 className='mb-0 feher'>Éttermek</h2>
           <input
             className='form-control restaurants-search'
             type='search'

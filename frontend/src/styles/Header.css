@@ -11,6 +11,7 @@
     width: 100%; 
     position: relative;
     z-index: 1000;
+    border-bottom:1px solid #ffffff;
 }
 
 
@@ -57,7 +58,7 @@
     left: -170px; 
     background-color: #7a1919;
     border-radius: 5px;
-
+    border: 1px solid #ffffff;
     
     display: flex;
     flex-direction: column;
