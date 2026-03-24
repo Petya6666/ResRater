@@ -7,7 +7,7 @@
     text-align: left;
     padding: clamp(1rem, 4vw, 5rem);
     color: white;
-    background-color: #7a1919;
+    background-color: #370b0b;
     font-family: 'Dela Gothic One', sans-serif;
     box-sizing: border-box;
 }
@@ -20,7 +20,7 @@
     text-align: center;
     padding: clamp(1.25rem, 4vw, 5rem);
     color: white;
-    background-color: #7a1919;
+    background-color: #370b0b;
     border: 1px solid #ffffff;
     font-family: 'Dela Gothic One', sans-serif;
     box-sizing: border-box;
@@ -31,7 +31,7 @@
 }
 .bejelentkezes-gomb {
     background-color: #ffffff;
-    color: #7a1919;
+    color: #370b0b;
     font-weight: bold;
     margin: 20px;
     border: none;
@@ -54,7 +54,7 @@
     width: 18rem;
     border-radius: 10px;
     font-family: 'Dela Gothic One', sans-serif;
-    background-color: #7a1919;
+    background-color: #370b0b;
     overflow: hidden; 
 }
 .card-container {
@@ -73,7 +73,7 @@
     object-fit: cover;
 }
 .card-body{
-    background-color: #7a1919;
+    background-color: #370b0b;
     border-radius: 3px;
 }
 .card-title {
@@ -93,7 +93,7 @@ h2 {
 }
 
 .piros {
-    background-color: #7a1919;
+    background-color: #370b0b;
     color: white;
     font-weight: bold;
     border: none;
@@ -110,7 +110,7 @@ h2 {
     margin: clamp(1rem, 4vw, 4.4rem) auto;
     padding: clamp(1rem, 4vw, 5rem);
     color: white;
-    background-color: #7a1919;
+    background-color: #370b0b;
     font-family: 'Dela Gothic One', sans-serif;
     border: 1px solid #ffffff;
     box-sizing: border-box;
@@ -118,7 +118,7 @@ h2 {
 
 .submit-gomb {
     background-color: #ffffff;
-    color: #7a1919;
+    color: #370b0b;
     font-weight: bold;
     border: none;
     padding: 10px 40px;
@@ -157,9 +157,9 @@ h2 {
 
 .restaurants-search {
     width: min(100%, 420px);
-    background-color: #7a1919;
+    background-color: #370b0b;
     color: white;
-    border-color: #7a1919;
+    border-color: #370b0b;
 }
 
 .restaurants-search::placeholder {
@@ -167,9 +167,9 @@ h2 {
 }
 
 .restaurants-search:focus {
-    background-color: #7a1919;
+    background-color: #370b0b;
     color: white;
-    border-color: #7a1919;
+    border-color: #370b0b;
     box-shadow: 0 0 0 0.25rem rgba(122, 25, 25, 0.35);
 }
 
