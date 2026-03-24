@@ -103,7 +103,7 @@ const Login = () => {
                     onChange={handleChange}
                     placeholder="Jelszó"
                 />
-
+                <br />
                 <button
                     className='bejelentkezes-gomb'
                     onClick={handleSubmit}

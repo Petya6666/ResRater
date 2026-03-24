@@ -41,7 +41,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'resrater_db',
-    port: 3307
+    port: 3306
 });
 
 

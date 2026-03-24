@@ -103,7 +103,7 @@ const Restaurant = () => {
         });
         setCurrentUserId(result?.data?.id ?? null);
       } catch {
-        // invalid/expired token -> clear so we don't keep getting 403
+        
         localStorage.removeItem('token');
         setCurrentUserId(null);
       }
@@ -114,7 +114,7 @@ const Restaurant = () => {
 
   useEffect(() => {
     if (id) fetchRatings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [id, currentUserId]);
 
   const refreshKommentek = async () => {
@@ -277,52 +277,52 @@ const Restaurant = () => {
   return (
     <>
       <Header />
-      <div className='container mt-4 d-flex justify-content-center'>
-        <div style={{ maxWidth: '1000px', width: '100%' }}>
+      <div className='page-shell mt-4'>
+        <div className='page-content'>
           <button className='piros mb-3' onClick={() => navigate('/restaurants')}>
             ← Vissza
           </button>
           
-          <div className='doboz row'>
-            <div className='col-md-6'>
-              <img 
-                src={etterem.fajl_nev.startsWith('kepek/') 
-                  ? `http://localhost:3000/${etterem.fajl_nev}` 
-                  : `http://localhost:3000/kepek/${etterem.fajl_nev}`} 
-                alt={etterem.nev} 
-                className='img-fluid rounded'
-                style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
-              />
-            </div>
-            
-            <div className='col-md-6'>
-              <h1>{etterem.nev}</h1>
-              <hr />
-              
-              <div className='mb-3'>
-                <h5>Leírás:</h5>
-                <p>{etterem.leiras || 'Nincs leírás'}</p>
+          <div className='doboz'>
+            <div className='row g-3'>
+              <div className='col-md-6'>
+                <img 
+                  src={etterem.fajl_nev.startsWith('kepek/') 
+                    ? `http://localhost:3000/${etterem.fajl_nev}` 
+                    : `http://localhost:3000/kepek/${etterem.fajl_nev}`} 
+                  alt={etterem.nev} 
+                  className='img-fluid rounded'
+                  style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+                />
               </div>
               
-              <div className='mb-3'>
-                <h5>Elérhetőség:</h5>
-                <p><strong>Telefon:</strong> {etterem.telefon}</p>
-                <p><strong>Város:</strong> {etterem.varos}</p>
-                <p><strong>Irányítószám:</strong> {etterem.iranyitoszam}</p>
-              </div>
-              
-              {etterem.kategoria && (
+              <div className='col-md-6'>
+                <h1>{etterem.nev}</h1>
+                <hr />
+                
                 <div className='mb-3'>
-                  <h5>Kategória:</h5>
-                  <p>{etterem.kategoria}</p>
+                  <h5>Leírás:</h5>
+                  <p>{etterem.leiras || 'Nincs leírás'}</p>
                 </div>
-              )}
-              
-              
+
+                <div className='mb-3'>
+                  <h5>Elérhetőség:</h5>
+                  <p><strong>Telefon:</strong> {etterem.telefon}</p>
+                  <p><strong>Város:</strong> {etterem.varos}</p>
+                  <p><strong>Irányítószám:</strong> {etterem.iranyitoszam}</p>
+                </div>
+                
+                {etterem.kategoria && (
+                  <div className='mb-3'>
+                    <h5>Kategória:</h5>
+                    <p>{etterem.kategoria}</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Rating block (above comments) */}
+          {}
           <div className='dobozcomment mb-4'>
             <h5>Értékelés:</h5>
 
@@ -401,7 +401,7 @@ const Restaurant = () => {
                   <ul className='list-group'>
                     {kommentek.map((komment) => (
                       <li key={komment.komment_id} className='list-group-item'>
-                        <div className='d-flex justify-content-between align-items-start gap-2'>
+                        <div className='comment-row'>
                           <div>
                             <p><strong>{komment.felhasznev}</strong> ({new Date(komment.letrehoz_ido).toLocaleDateString()}):</p>
                             <p>{komment.megjegyzes}</p>

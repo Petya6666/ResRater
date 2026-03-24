@@ -1,28 +1,35 @@
-.doboz{ 
+.doboz {
     border-radius: 10px;
     border: 1px solid #ffffff;
-    height: auto;
-    width: 1000px;
-    margin: 70px auto;
-    text-align: center;
-    padding: 80px;
+    min-height: auto;
+    width: min(1000px, calc(100% - 2rem));
+    margin: clamp(1rem, 4vw, 4.4rem) auto;
+    text-align: left;
+    padding: clamp(1rem, 4vw, 5rem);
     color: white;
     background-color: #7a1919;
     font-family: 'Dela Gothic One', sans-serif;
+    box-sizing: border-box;
 }
-.login-doboz{ 
+
+.login-doboz {
     border-radius: 10px;
-    height: auto;
-    width: 1000px;
-    margin: 70px auto;
+    min-height: auto;
+    width: min(1000px, calc(100% - 2rem));
+    margin: clamp(1rem, 4vw, 4.4rem) auto;
     text-align: center;
-    padding: 80px;
+    padding: clamp(1.25rem, 4vw, 5rem);
     color: white;
     background-color: #7a1919;
     border: 1px solid #ffffff;
     font-family: 'Dela Gothic One', sans-serif;
+    box-sizing: border-box;
 }
-.bejelentkezes-gomb{
+
+.home-box {
+    text-align: center;
+}
+.bejelentkezes-gomb {
     background-color: #ffffff;
     color: #7a1919;
     font-weight: bold;
@@ -34,7 +41,7 @@
     font-family: 'Dela Gothic One', sans-serif;
 }
 .input-field {
-    width: 90%;
+    width: min(560px, 100%);
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
@@ -52,9 +59,10 @@
 }
 .card-container {
     display: flex;
-    gap: 67px;
+    gap: clamp(1rem, 3vw, 4rem);
     justify-content: center;
     margin-top: 50px;
+    flex-wrap: wrap;
 }
 
 .kartya .feher {
@@ -70,7 +78,7 @@
 }
 .card-title {
     font-family: 'Dela Gothic One', sans-serif;
-    font-size: 24px;
+    font-size: clamp(1.05rem, 2.5vw, 1.5rem);
     font-weight: bold;
     color: white !important;
 }
@@ -79,11 +87,12 @@
     font-size: 16px;
     color: white;
 }
-h2{
+h2 {
     font-family: 'Dela Gothic One', sans-serif;
     text-align: center;
 }
-.piros{
+
+.piros {
     background-color: #7a1919;
     color: white;
     font-weight: bold;
@@ -94,17 +103,20 @@ h2{
     font-family: 'Dela Gothic One', sans-serif;
     border: 1px solid #ffffff;
 }
-.dobozcomment{ 
+.dobozcomment {
     border-radius: 10px;
-    height: auto;
-    width: 1000px;
-    margin: 70px auto;
-    padding: 80px;
+    min-height: auto;
+    width: min(1000px, calc(100% - 2rem));
+    margin: clamp(1rem, 4vw, 4.4rem) auto;
+    padding: clamp(1rem, 4vw, 5rem);
     color: white;
     background-color: #7a1919;
     font-family: 'Dela Gothic One', sans-serif;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
 }
-.submit-gomb{
+
+.submit-gomb {
     background-color: #ffffff;
     color: #7a1919;
     font-weight: bold;
@@ -114,8 +126,26 @@ h2{
     cursor: pointer;
     font-family: 'Dela Gothic One', sans-serif;
 }
-.feher{
+.feher {
     color: white !important;
+}
+
+.page-shell {
+    width: 100%;
+    padding: 0 0.5rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.page-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.comment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 /* Restaurants page */
 .restaurants-header {
@@ -126,7 +156,7 @@ h2{
 }
 
 .restaurants-search {
-    max-width: 360px;
+    width: min(100%, 420px);
     background-color: #7a1919;
     color: white;
     border-color: #7a1919;
@@ -143,18 +173,22 @@ h2{
     box-shadow: 0 0 0 0.25rem rgba(122, 25, 25, 0.35);
 }
 
-/* Global background */
+
 :root {
     --bg-floating-lines: url('/floating-lines-1774263650372.png');
 }
 
 html, body {
-    height: 100%;
+    min-height: 100%;
+}
+
+html {
+    background-color: #140204;
 }
 
 body {
     margin: 0;
-    /* image in /public so it can be referenced from site root */
+    min-width: 320px;
     background-image: var(--bg-floating-lines);
     background-repeat: no-repeat;
     background-position: center top;
@@ -162,10 +196,50 @@ body {
     background-attachment: fixed;
 }
 
-/* Ensure app content is above the background */
+
 #root {
     position: relative;
     z-index: 0;
+    min-height: 100vh;
+}
+
+@media (max-width: 991.98px) {
+    .doboz,
+    .dobozcomment,
+    .login-doboz {
+        width: min(1000px, calc(100% - 1.25rem));
+    }
+}
+
+@media (max-width: 767.98px) {
+    body {
+        background-repeat: repeat-y;
+        background-size: 100% auto;
+        background-attachment: scroll;
+    }
+
+    .doboz,
+    .dobozcomment,
+    .login-doboz {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .submit-gomb,
+    .bejelentkezes-gomb,
+    .piros {
+        width: 100%;
+        margin: 0.75rem 0 0;
+    }
+
+    .input-field {
+        width: 100%;
+    }
+
+    .comment-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 
 

@@ -209,8 +209,8 @@ const NewRestaurant = () => {
   return (
     <>
       <Header />
-      <div className='container mt-4 d-flex justify-content-center'>
-        <div style={{ maxWidth: "900px", width: "100%" }}>
+      <div className='page-shell mt-4'>
+        <div className='page-content' style={{ maxWidth: "900px" }}>
           <button className='piros mb-3 ' onClick={() => navigate("/restaurants")}>← Vissza</button>
 
           <div className='doboz'>

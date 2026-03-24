@@ -65,7 +65,7 @@ const Restaurants = () => {
 
         <div className='row'>
           {ettermek.map((etterem) => (
-            <div key={etterem.etterem_id} className='col-md-4 mb-4'>
+            <div key={etterem.etterem_id} className='col-12 col-sm-6 col-lg-4 mb-4'>
               <div 
                 className='card h-100' 
                 onClick={() => handleCardClick(etterem)}
