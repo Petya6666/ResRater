@@ -1,0 +1,14 @@
+# Build output
+**/bin/
+**/obj/
+
+# Visual Studio files
+**/.vs/
+*.user
+
+# Node modules (backend)
+backend/node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
