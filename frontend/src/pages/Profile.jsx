@@ -107,6 +107,7 @@ function Profile(){
                     onChange={(e) => setFelhasznev(e.target.value)}
                     placeholder="Új felhasználónév"
                 />
+                <br />
                 <button
                     className='bejelentkezes-gomb'
                     onClick={handleUsernameSubmit}
@@ -131,6 +132,7 @@ function Profile(){
                     onChange={(e) => setUjJelszo(e.target.value)}
                     placeholder="Új jelszó"
                 />
+                <br />
                 <button
                     className='bejelentkezes-gomb'
                     onClick={handlePasswordSubmit}
