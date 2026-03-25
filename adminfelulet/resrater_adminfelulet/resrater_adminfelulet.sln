@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "resrater_adminfelulet", "resrater_adminfelulet\resrater_adminfelulet.csproj", "{079A6874-EB7B-4AD3-87A8-9B3CF117BD1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "resrater_adminfelulet", "resrater_adminfelulet\resrater_adminfelulet.csproj", "{CCA3B0C1-1887-430A-A3A0-907BA4E6270A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{079A6874-EB7B-4AD3-87A8-9B3CF117BD1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{079A6874-EB7B-4AD3-87A8-9B3CF117BD1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{079A6874-EB7B-4AD3-87A8-9B3CF117BD1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{079A6874-EB7B-4AD3-87A8-9B3CF117BD1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA3B0C1-1887-430A-A3A0-907BA4E6270A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA3B0C1-1887-430A-A3A0-907BA4E6270A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA3B0C1-1887-430A-A3A0-907BA4E6270A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA3B0C1-1887-430A-A3A0-907BA4E6270A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FF9E90F8-5676-41AC-98C8-6725105BCE8B}
+		SolutionGuid = {393A1352-231C-41FF-ADC2-8E45E51FFB06}
 	EndGlobalSection
 EndGlobal

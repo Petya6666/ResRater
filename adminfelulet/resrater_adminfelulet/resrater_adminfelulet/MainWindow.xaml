@@ -5,105 +5,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:resrater_adminfelulet.Views"
         mc:Ignorable="d"
-        Title="ResRater – Admin Felület" Height="700" Width="1100" MinHeight="600" MinWidth="900"
-        Background="{StaticResource BackgroundBrush}"
+        Title="ResRater Admin Panel" Height="680" Width="1050"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="56"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="28"/>
-        </Grid.RowDefinitions>
 
-        <!-- Top Header -->
-        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}">
-            <Grid Margin="16,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="🍽️" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="ResRater Admin" FontSize="20" FontWeight="Bold"
-                               Foreground="White" VerticalAlignment="Center"/>
+    <DockPanel>
+
+        <!-- Menu bar at the top -->
+        <Menu DockPanel.Dock="Top" Background="#FF370B0B">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit" Click="MenuExit_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Main content area -->
+        <Grid Background="#FF370B0B">
+            <Grid.RowDefinitions>
+                <!-- Header banner -->
+                <RowDefinition Height="50"/>
+                <!-- Tab control fills remaining space -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header banner -->
+            <Border Grid.Row="0" Background="#FF370B0B">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+
+                    <Image Source="/Assets/logo.png" Width="140" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-10" Margin="0,5,0,0"/>
+
+                    <TextBlock Text="Admin Panel"
+                   Foreground="White" FontSize="20" FontWeight="Bold"
+                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
-                    <Ellipse Width="8" Height="8" Margin="0,0,6,0">
-                        <Ellipse.Style>
-                            <Style TargetType="Ellipse">
-                                <Setter Property="Fill" Value="#E74C3C"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                        <Setter Property="Fill" Value="#2ECC71"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Ellipse.Style>
-                    </Ellipse>
-                    <TextBlock Text="{Binding ConnectionStatus}" Foreground="White"
-                               FontSize="12" VerticalAlignment="Center" Opacity="0.9"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+            </Border>
 
-        <!-- Tab Control -->
-        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}"
-                    Background="{StaticResource BackgroundBrush}"
-                    BorderThickness="0">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="FontSize" Value="13"/>
-                    <Setter Property="Padding" Value="16,10"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="TabItem">
-                                <Border x:Name="TabBorder" Padding="{TemplateBinding Padding}"
-                                        BorderThickness="0,0,0,3" BorderBrush="Transparent">
-                                    <ContentPresenter ContentSource="Header" HorizontalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="TabBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
-                                        <Setter Property="FontWeight" Value="SemiBold"/>
-                                    </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TabControl.Resources>
+            <!-- Tab control with 3 tabs - each tab hosts a UserControl from the Views folder -->
+            <TabControl Grid.Row="1" Margin="10" Background="White">
 
-            <TabItem Header="📊 Irányítópult">
-                <views:DashboardView DataContext="{Binding Dashboard}"/>
-            </TabItem>
-            <TabItem Header="👥 Felhasználók">
-                <views:FelhasznalokView DataContext="{Binding Felhasznalok}"/>
-            </TabItem>
-            <TabItem Header="🍽️ Éttermek">
-                <views:EttermekView DataContext="{Binding Ettermek}"/>
-            </TabItem>
-            <TabItem Header="⭐ Értékelések">
-                <views:ErtekelesekView DataContext="{Binding Ertekelesek}"/>
-            </TabItem>
-            <TabItem Header="💬 Kommentek">
-                <views:KommentekView DataContext="{Binding Kommentek}"/>
-            </TabItem>
-        </TabControl>
+                <!-- Dashboard tab - shows statistics -->
+                <TabItem Header="Dashboard">
+                    <views:DashboardTab/>
+                </TabItem>
 
-        <!-- Status Bar -->
-        <Border Grid.Row="2" Background="{StaticResource PrimaryBrush}" Opacity="0.85">
-            <Grid Margin="12,0">
-                <TextBlock Text="ResRater Admin Felület v1.0 – MySQL/MariaDB"
-                           Foreground="White" Opacity="0.7" FontSize="11" VerticalAlignment="Center"/>
-            </Grid>
-        </Border>
-    </Grid>
+                <!-- Users tab - user management -->
+                <TabItem Header="Users">
+                    <views:UsersTab/>
+                </TabItem>
+
+                <!-- Restaurants tab - restaurant management -->
+                <TabItem Header="Restaurants">
+                    <views:RestaurantsTab/>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+
+    </DockPanel>
 </Window>

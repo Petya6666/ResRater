@@ -1,0 +1,58 @@
+<UserControl x:Class="resrater_adminfelulet.Views.UsersTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="900">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <!-- Search / toolbar row -->
+            <RowDefinition Height="Auto"/>
+            <!-- DataGrid fills the remaining space -->
+            <RowDefinition Height="*"/>
+            <!-- Action buttons row -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search bar and Refresh button -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Search by username:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <TextBox x:Name="txtSearch"
+                     Width="200" Height="28"
+                     TextChanged="txtSearch_TextChanged"/>
+            <Button Content="Refresh"
+                    Width="80" Height="28" Margin="10,0,0,0"
+                    Click="btnRefresh_Click"/>
+        </StackPanel>
+
+        <!-- Users DataGrid - shows all users with read-only columns -->
+        <DataGrid Grid.Row="1"
+                  x:Name="dgUsers"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  CanUserAddRows="False"
+                  AlternatingRowBackground="#F5F5F5"
+                  GridLinesVisibility="Horizontal"
+                  Margin="0,0,0,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="User ID"           Binding="{Binding UserId}"           Width="80"/>
+                <DataGridTextColumn Header="Username"          Binding="{Binding Username}"          Width="160"/>
+                <DataGridTextColumn Header="Email"             Binding="{Binding Email}"             Width="220"/>
+                <DataGridTextColumn Header="Registration Date" Binding="{Binding RegistrationDate}"  Width="160"/>
+                <DataGridTextColumn Header="Role"              Binding="{Binding Role}"              Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Action buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Content="Delete User"
+                    Width="110" Height="30"
+                    Background="#E74C3C" Foreground="White"
+                    Click="btnDeleteUser_Click"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
