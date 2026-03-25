@@ -55,8 +55,22 @@
     border-radius: 10px;
     font-family: 'Dela Gothic One', sans-serif;
     background-color: #370b0b;
-    overflow: hidden; 
+    /* Avoid clipping shadows/corners */
+    overflow: visible;
 }
+
+/* Keep the image/inner content respecting the rounded card corners */
+.kartya .kep,
+.kartya img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-body{
+    background-color: #370b0b;
+    border-radius: 0 0 10px 10px;
+}
+
 .card-container {
     display: flex;
     gap: clamp(1rem, 3vw, 4rem);
@@ -71,10 +85,6 @@
 .kep {
     height: 200px;
     object-fit: cover;
-}
-.card-body{
-    background-color: #370b0b;
-    border-radius: 3px;
 }
 .card-title {
     font-family: 'Dela Gothic One', sans-serif;
@@ -285,6 +295,33 @@ button.restaurants-filterbtn.active,
     margin-top: 6px;
 }
 
+/* Restaurants page: scale an inner wrapper so rounded corners stay even */
+.restaurants-card {
+    background-color: transparent;
+    border-radius: 10px;
+    overflow: visible; /* let scaled inner content extend */
+}
+
+.restaurants-card-inner {
+    height: 100%;
+    background-color: #370b0b; /* avoid white bleed in corners */
+    border-radius: 10px;
+    overflow: hidden; /* clip image to rounded corners */
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.restaurants-card .card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.restaurants-card .card-body {
+    background-color: #370b0b;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
 @media (max-width: 480px) {
     .restaurants-searchrow {
         width: 100%;
@@ -304,19 +341,19 @@ html, body {
 }
 
 html {
-    background-color: #140204;
+    background-color: #1d0202;
 }
 
 body {
     margin: 0;
     min-width: 320px;
-    background-image: var(--bg-floating-lines);
+    background-color: #1d0202;
+    background-image: none;
     background-repeat: no-repeat;
     background-position: center top;
     background-size: cover;
     background-attachment: fixed;
 }
-
 
 #root {
     position: relative;
@@ -361,6 +398,13 @@ body {
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+/* Make sure Bootstrap card background/border doesn't show through at corners */
+.card {
+    background-color: #370b0b;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 

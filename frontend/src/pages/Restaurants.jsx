@@ -165,6 +165,7 @@ const Restaurants = () => {
                   <h5 className='card-title'>{etterem.nev}</h5>
                   <p className='card-text'>Város: {etterem.varos}</p>
                   <p className='card-text'>Átlagos értékelés: {etterem.atlag}</p>
+                  <p className='card-text'>Kategória: {etterem.kategoria_nev}</p>
                 </div>
               </div>
             </div>
