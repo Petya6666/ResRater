@@ -173,6 +173,127 @@ h2 {
     box-shadow: 0 0 0 0.25rem rgba(122, 25, 25, 0.35);
 }
 
+.restaurants-searchrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(100%, 520px);
+}
+
+.restaurants-filterwrap {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.restaurants-filterbtn {
+    background-color: #370b0b;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    font-family: 'Dela Gothic One', sans-serif;
+    white-space: nowrap;
+}
+
+.restaurants-filterbtn:hover,
+.restaurants-filterbtn:focus {
+    background-color: #370b0b !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    background-image: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+button.restaurants-filterbtn,
+button.restaurants-filterbtn:active,
+button.restaurants-filterbtn.active,
+.btn.restaurants-filterbtn:active,
+.btn.restaurants-filterbtn.active {
+    background-color: #370b0b !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+.restaurants-filtermenu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: min(320px, calc(100vw - 2rem));
+    padding: 12px;
+    background-color: #370b0b;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    z-index: 20;
+    color: #ffffff;
+}
+
+.restaurants-filterlabel {
+    font-size: 0.85rem;
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Szűrő mezők: fordítva – mező fehér, szöveg a div-ek sötétpiros színe */
+.restaurants-filtercontrol,
+.restaurants-filtermenu input[type='number'] {
+    background-color: #ffffff !important;
+    color: #370b0b !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.restaurants-filtercontrol::placeholder,
+.restaurants-filtermenu input[type='number']::placeholder {
+    color: rgba(55, 11, 11, 0.72) !important;
+}
+
+.restaurants-filtercontrol:focus,
+.restaurants-filtermenu input[type='number']:focus {
+    background-color: #ffffff !important;
+    color: #370b0b !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Select optionök: fehér háttér, sötét szöveg */
+.restaurants-filtermenu select option {
+    background-color: #ffffff;
+    color: #370b0b;
+}
+
+.restaurants-filtergroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.restaurants-filterrow {
+    display: flex;
+    gap: 8px;
+}
+
+.restaurants-filteractions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+@media (max-width: 480px) {
+    .restaurants-searchrow {
+        width: 100%;
+    }
+
+    .restaurants-filterrow {
+        flex-direction: column;
+    }
+}
 
 :root {
     --bg-floating-lines: url('/floating-lines-1774263650372.png');

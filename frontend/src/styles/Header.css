@@ -38,7 +38,7 @@
 
 .colors:hover,
 .colors:focus {
-    color: pink;
+    color: rgb(194, 0, 32);
     text-decoration: none;
 }
 
@@ -68,7 +68,7 @@
 .profile-dropdown-menu {
     color: white;
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + 20px);
     right: 0;
     min-width: 180px;
     background-color: #370b0b;
@@ -92,7 +92,7 @@
 
 .profile-dropdown-item:hover,
 .profile-dropdown-item:focus {
-    color: pink;
+    color: rgb(194, 0, 32);
     background-color: #370b0b;
 }
 

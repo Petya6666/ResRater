@@ -645,6 +645,103 @@ app.post('/ettermek', authenticateToken, (req, res) => {
     });
 });
 
+// Kategória lista a szűrőhöz (id + név)
+app.get('/ettermek/filters/kategoriak', (req, res) => {
+    const sql = 'SELECT kategoria_id, kategoria_nev FROM kategoriak ORDER BY kategoria_nev ASC';
+    db.query(sql, (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(rows);
+    });
+});
+
+// Éttermek listázása szűrőkkel
+// GET /ettermek?q=&kategoria_id=&min_atlag=&max_atlag=
+app.get('/ettermek', (req, res) => {
+    const q = (req.query.q ?? '').toString().trim();
+
+    const katRaw = (req.query.kategoria_id ?? '').toString().trim();
+    const kategoriaId = katRaw.length ? Number.parseInt(katRaw, 10) : null;
+
+    const minRaw = (req.query.min_atlag ?? '').toString().trim();
+    const maxRaw = (req.query.max_atlag ?? '').toString().trim();
+    const minAtlag = minRaw.length ? Number.parseFloat(minRaw) : null;
+    const maxAtlag = maxRaw.length ? Number.parseFloat(maxRaw) : null;
+
+    if (kategoriaId !== null && !Number.isInteger(kategoriaId)) {
+        return res.status(400).json({ error: 'Érvénytelen kategoria_id.' });
+    }
+    if (minAtlag !== null && (Number.isNaN(minAtlag) || minAtlag < 0 || minAtlag > 5)) {
+        return res.status(400).json({ error: 'Érvénytelen min_atlag (0-5).' });
+    }
+    if (maxAtlag !== null && (Number.isNaN(maxAtlag) || maxAtlag < 0 || maxAtlag > 5)) {
+        return res.status(400).json({ error: 'Érvénytelen max_atlag (0-5).' });
+    }
+
+    const baseSql = `
+        SELECT
+            e.etterem_id,
+            e.nev,
+            e.iranyitoszam,
+            v.varos,
+            ROUND(AVG(er.atlag), 2) AS atlag,
+            MIN(k.fajl_nev) AS fajl_nev,
+            e.kategoria_id
+        FROM ettermek e
+        INNER JOIN varosok v ON e.iranyitoszam = v.iranyitoszam
+        LEFT JOIN ertekelesek er ON e.etterem_id = er.etterem_id
+        LEFT JOIN kepek k ON e.etterem_id = k.etterem_id
+    `;
+
+    const where = [];
+    const params = [];
+
+    if (q.length > 0) {
+        where.push('(e.nev LIKE ? OR v.varos LIKE ?)');
+        const like = `%${q}%`;
+        params.push(like, like);
+    }
+
+    if (kategoriaId !== null) {
+        where.push('e.kategoria_id = ?');
+        params.push(kategoriaId);
+    }
+
+    const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+    // min/max átlagot HAVING-ban kell szűrni, mert aggregált mező
+    const having = [];
+    if (minAtlag !== null) {
+        having.push('AVG(er.atlag) >= ?');
+        params.push(minAtlag);
+    }
+    if (maxAtlag !== null) {
+        having.push('AVG(er.atlag) <= ?');
+        params.push(maxAtlag);
+    }
+
+    // Ha nincs értékelés, AVG = NULL. Min/max szűrés esetén ezeket alapból kizárjuk.
+    const havingSql = having.length ? `HAVING ${having.join(' AND ')}` : '';
+
+    const sql = `
+        ${baseSql}
+        ${whereSql}
+        GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos, e.kategoria_id
+        ${havingSql}
+        ORDER BY e.nev ASC
+    `;
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(result);
+    });
+});
+
 //middleware a token ellenőrzésére
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
