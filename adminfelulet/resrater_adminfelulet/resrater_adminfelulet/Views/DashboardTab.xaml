@@ -25,7 +25,7 @@
         <WrapPanel Grid.Row="1" Orientation="Horizontal">
 
             <!-- Total Users card -->
-            <Border Width="180" Height="110" Background="#3498DB" CornerRadius="8" Margin="10">
+            <Border Width="180" Height="110" Background="#FFDC0000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Total Users"
                                Foreground="White" FontSize="14"
@@ -38,7 +38,7 @@
             </Border>
 
             <!-- Total Restaurants card -->
-            <Border Width="180" Height="110" Background="#2ECC71" CornerRadius="8" Margin="10">
+            <Border Width="180" Height="110" Background="#FFB50000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Total Restaurants"
                                Foreground="White" FontSize="14"
@@ -51,7 +51,7 @@
             </Border>
 
             <!-- Total Ratings card -->
-            <Border Width="180" Height="110" Background="#E74C3C" CornerRadius="8" Margin="10">
+            <Border Width="180" Height="110" Background="#FF8A0D00" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Total Ratings"
                                Foreground="White" FontSize="14"
@@ -64,7 +64,7 @@
             </Border>
 
             <!-- Total Comments card -->
-            <Border Width="180" Height="110" Background="#9B59B6" CornerRadius="8" Margin="10">
+            <Border Width="180" Height="110" Background="#FF620000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Total Comments"
                                Foreground="White" FontSize="14"
