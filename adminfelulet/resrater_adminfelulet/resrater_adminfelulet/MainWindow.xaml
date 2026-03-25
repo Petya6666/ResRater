@@ -3,217 +3,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:resrater_adminfelulet.Views"
         mc:Ignorable="d"
-        Title="ResRater Admin Felület" Height="650" Width="1000"
+        Title="ResRater Admin Panel" Height="680" Width="1050"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Background="#F0F0F0">
-        <!-- Fejléc -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
 
-        <!-- Fejléc sáv -->
-        <Border Grid.Row="0" Background="#2C3E50">
-            <TextBlock Text="ResRater Admin Felület"
-                       Foreground="White" FontSize="22" FontWeight="Bold"
-                       VerticalAlignment="Center" Margin="20,0,0,0"/>
-        </Border>
+        <!-- Menu bar at the top -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit" Click="MenuExit_Click"/>
+            </MenuItem>
+        </Menu>
 
-        <!-- Fő tartalom tabokkal -->
-        <TabControl Grid.Row="1" Margin="10" Background="White">
+        <!-- Main content area -->
+        <Grid Background="#F0F0F0">
+            <Grid.RowDefinitions>
+                <!-- Header banner -->
+                <RowDefinition Height="50"/>
+                <!-- Tab control fills remaining space -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <!-- ===================== DASHBOARD TAB ===================== -->
-            <TabItem Header="Dashboard">
-                <Grid Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+            <!-- Header banner -->
+            <Border Grid.Row="0" Background="#2C3E50">
+                <TextBlock Text="ResRater Admin Panel"
+                           Foreground="White" FontSize="20" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="20,0,0,0"/>
+            </Border>
 
-                    <TextBlock Grid.Row="0" Text="Statisztikák" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+            <!-- Tab control with 3 tabs - each tab hosts a UserControl from the Views folder -->
+            <TabControl Grid.Row="1" Margin="10" Background="White">
 
-                    <!-- 4 statisztika kártya -->
-                    <WrapPanel Grid.Row="1" Orientation="Horizontal">
+                <!-- Dashboard tab - shows statistics -->
+                <TabItem Header="Dashboard">
+                    <views:DashboardTab/>
+                </TabItem>
 
-                        <!-- Felhasználók kártya -->
-                        <Border Width="200" Height="120" Background="#3498DB" CornerRadius="8" Margin="10">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Felhasználók" Foreground="White" FontSize="14" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtFelhasznalokSzama" Text="0" Foreground="White"
-                                           FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+                <!-- Users tab - user management -->
+                <TabItem Header="Users">
+                    <views:UsersTab/>
+                </TabItem>
 
-                        <!-- Éttermek kártya -->
-                        <Border Width="200" Height="120" Background="#2ECC71" CornerRadius="8" Margin="10">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Éttermek" Foreground="White" FontSize="14" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtEttermekSzama" Text="0" Foreground="White"
-                                           FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+                <!-- Restaurants tab - restaurant management -->
+                <TabItem Header="Restaurants">
+                    <views:RestaurantsTab/>
+                </TabItem>
 
-                        <!-- Értékelések kártya -->
-                        <Border Width="200" Height="120" Background="#E74C3C" CornerRadius="8" Margin="10">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Értékelések" Foreground="White" FontSize="14" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtErtekelesekSzama" Text="0" Foreground="White"
-                                           FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+            </TabControl>
+        </Grid>
 
-                        <!-- Kommentek kártya -->
-                        <Border Width="200" Height="120" Background="#9B59B6" CornerRadius="8" Margin="10">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Kommentek" Foreground="White" FontSize="14" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtKommentekSzama" Text="0" Foreground="White"
-                                           FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-
-                    </WrapPanel>
-                </Grid>
-            </TabItem>
-
-            <!-- ===================== FELHASZNÁLÓK TAB ===================== -->
-            <TabItem Header="Felhasználók">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Keresés és frissítés sor -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                        <TextBlock Text="Keresés:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBox x:Name="txtFelhasznaloKereses" Width="200" Height="28"
-                                 TextChanged="txtFelhasznaloKereses_TextChanged"/>
-                        <Button Content="Frissít" Width="80" Height="28" Margin="10,0,0,0"
-                                Click="btnFelhasznalokFrissit_Click"/>
-                    </StackPanel>
-
-                    <!-- Felhasználók táblázat -->
-                    <DataGrid Grid.Row="1" x:Name="dgFelhasznalok"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-                              GridLinesVisibility="Horizontal"
-                              AlternatingRowBackground="#F5F5F5">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding FelhasznaloId}" Width="50"/>
-                            <DataGridTextColumn Header="Felhasználónév" Binding="{Binding Felhasznev}" Width="150"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
-                            <DataGridTextColumn Header="Szerepkör" Binding="{Binding Szerep}" Width="100"/>
-                            <DataGridTextColumn Header="Regisztráció" Binding="{Binding RegDatum}" Width="150"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!-- Műveletek gombjai -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
-                        <Button Content="Szerepkör váltása" Width="140" Height="32" Margin="0,0,10,0"
-                                Background="#3498DB" Foreground="White"
-                                Click="btnSzerepValt_Click"/>
-                        <Button Content="Felhasználó törlése" Width="140" Height="32"
-                                Background="#E74C3C" Foreground="White"
-                                Click="btnFelhasznaloTorles_Click"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-
-            <!-- ===================== ÉTTERMEK TAB ===================== -->
-            <TabItem Header="Éttermek">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Éttermek táblázat -->
-                    <DataGrid Grid.Row="0" x:Name="dgEttermek"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-                              GridLinesVisibility="Horizontal"
-                              AlternatingRowBackground="#F5F5F5"
-                              SelectionChanged="dgEttermek_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding EtteremId}" Width="50"/>
-                            <DataGridTextColumn Header="Név" Binding="{Binding Nev}" Width="180"/>
-                            <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="120"/>
-                            <DataGridTextColumn Header="Kategória ID" Binding="{Binding KategoriaId}" Width="90"/>
-                            <DataGridTextColumn Header="Irányítószám" Binding="{Binding Iranyitoszam}" Width="100"/>
-                            <DataGridTextColumn Header="Jóváhagyott" Binding="{Binding JovahagyottSzoveg}" Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!-- Új étterem hozzáadás form -->
-                    <GroupBox Grid.Row="1" Header="Új étterem / Szerkesztés" Margin="0,10,0,0">
-                        <Grid Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0" Margin="5">
-                                <TextBlock Text="Név:"/>
-                                <TextBox x:Name="txtEtteremNev" Height="28"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="1" Margin="5">
-                                <TextBlock Text="Telefon:"/>
-                                <TextBox x:Name="txtEtteremTelefon" Height="28"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2" Margin="5">
-                                <TextBlock Text="Kategória ID (1-5):"/>
-                                <TextBox x:Name="txtEtteremKategoria" Height="28"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="3" Margin="5">
-                                <TextBlock Text="Irányítószám:"/>
-                                <TextBox x:Name="txtEtteremIranyitoszam" Height="28"/>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-
-                    <!-- Leírás és gombok -->
-                    <Grid Grid.Row="2" Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="5">
-                            <TextBlock Text="Leírás:"/>
-                            <TextBox x:Name="txtEtteremLeiras" Height="50" TextWrapping="Wrap"/>
-                        </StackPanel>
-
-                        <!-- Műveletek gombjai -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="10,0,0,5">
-                            <Button Content="Hozzáadás" Width="120" Height="32" Margin="0,0,0,5"
-                                    Background="#2ECC71" Foreground="White"
-                                    Click="btnEtteremHozzaad_Click"/>
-                            <Button Content="Szerkesztés" Width="120" Height="32" Margin="0,0,0,5"
-                                    Background="#3498DB" Foreground="White"
-                                    Click="btnEtteremSzerkeszt_Click"/>
-                            <Button Content="Jóváhagyás váltása" Width="120" Height="32" Margin="0,0,0,5"
-                                    Background="#F39C12" Foreground="White"
-                                    Click="btnJovahagyasValt_Click"/>
-                            <Button Content="Törlés" Width="120" Height="32"
-                                    Background="#E74C3C" Foreground="White"
-                                    Click="btnEtteremTorles_Click"/>
-                        </StackPanel>
-                    </Grid>
-
-                </Grid>
-            </TabItem>
-
-        </TabControl>
-    </Grid>
+    </DockPanel>
 </Window>
