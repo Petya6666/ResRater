@@ -28,14 +28,35 @@
 
             <!-- Header banner -->
             <Border Grid.Row="0" Background="#FF370B0B">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                <DockPanel VerticalAlignment="Center" Margin="20,0,20,0">
 
-                    <Image Source="/Assets/logo.png" Width="140" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-10" Margin="0,5,0,0"/>
+                    <!-- Left side: logo + title -->
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
+                        <Image Source="/Assets/logo.png" Width="140" Height="100"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Panel.ZIndex="-10" Margin="0,5,0,0"/>
+                        <TextBlock Text="Admin Panel"
+                                   Foreground="White" FontSize="20" FontWeight="Bold"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
 
-                    <TextBlock Text="Admin Panel"
-                   Foreground="White" FontSize="20" FontWeight="Bold"
-                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
+                    <!-- Right side: logged-in user + logout button -->
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"
+                                HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock x:Name="lblAdminNev"
+                                   Foreground="White" FontSize="13"
+                                   VerticalAlignment="Center" Margin="0,0,12,0"/>
+                        <Button x:Name="btnKijelentkezes"
+                                Content="Kijelentkezés"
+                                Width="110" Height="30"
+                                FontSize="12"
+                                Background="#FF6B1A1A"
+                                Foreground="White"
+                                BorderBrush="#FFAA4444"
+                                Click="btnKijelentkezes_Click"/>
+                    </StackPanel>
+
+                </DockPanel>
             </Border>
 
             <!-- Tab control with 3 tabs - each tab hosts a UserControl from the Views folder -->

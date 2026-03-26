@@ -6,6 +6,14 @@ using System.Collections.Generic;
 // Adatbázis segédosztály - minden adatbázis műveletet ez a class végez
 namespace resrater_adminfelulet
 {
+    // Bejelentkezés lehetséges eredményei
+    public enum BejelentkezesEredmeny
+    {
+        Sikeres,    // helyes adatok, admin szerepkör
+        NemAdmin,   // helyes adatok, de nem admin
+        Hibas       // helytelen felhasználónév vagy jelszó
+    }
+
     public static class AdatbazisHelper
     {
         // Kapcsolati sztring - localhost, port 3307, resrater_db adatbázis
@@ -272,6 +280,57 @@ namespace resrater_adminfelulet
             catch
             {
                 return 0;
+            }
+        }
+
+        // =====================
+        // BEJELENTKEZÉS
+        // =====================
+
+        // Admin hitelesítés: ellenőrzi a felhasználónevet, jelszót és az admin szerepkört.
+        // Megjegyzés: jelenleg sima szöveges jelszó-összehasonlítás történik.
+        // Éles alkalmazásban bcrypt könyvtárral kell összehasonlítani a hash-elt jelszót!
+        public static BejelentkezesEredmeny AdminBejelentkezes(string felhasznev, string jelszo)
+        {
+            try
+            {
+                using var kapcsolat = new MySqlConnection(kapcsolatiSztring);
+                kapcsolat.Open();
+
+                // Keressük meg a felhasználót felhasználónév alapján
+                string sql = "SELECT jelszo, szerep FROM felhasznalok WHERE felhasznev = @felhasznev LIMIT 1";
+                using var parancs = new MySqlCommand(sql, kapcsolat);
+                parancs.Parameters.AddWithValue("@felhasznev", felhasznev);
+
+                using var olvaso = parancs.ExecuteReader();
+
+                if (!olvaso.Read())
+                {
+                    // Nincs ilyen felhasználó
+                    return BejelentkezesEredmeny.Hibas;
+                }
+
+                string adatbazisJelszo = olvaso.GetString("jelszo");
+                string szerep = olvaso.GetString("szerep");
+
+                // Jelszó ellenőrzés (sima szöveges összehasonlítás)
+                // TODO: bcrypt: BCrypt.Net.BCrypt.Verify(jelszo, adatbazisJelszo)
+                if (jelszo != adatbazisJelszo)
+                {
+                    return BejelentkezesEredmeny.Hibas;
+                }
+
+                // Szerepkör ellenőrzés
+                if (szerep != "admin")
+                {
+                    return BejelentkezesEredmeny.NemAdmin;
+                }
+
+                return BejelentkezesEredmeny.Sikeres;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Hiba a bejelentkezés során: " + ex.Message);
             }
         }
     }
