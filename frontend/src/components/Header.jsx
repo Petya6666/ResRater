@@ -119,8 +119,9 @@ const Header = () => {
                     <Nav className='navbar-links me-auto'>
                         <Nav.Link as={Link} className='colors' to='/' onClick={closeMenus}>Kezdőlap</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/restaurants' onClick={closeMenus}>Éttermek</Nav.Link>
-                        <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Étterem regisztrálása</Nav.Link>
-                    </Nav>
+                        <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Étterem regisztrálása</Nav.Link>                 
+                        {localStorage.getItem('token') && (  <Nav.Link as={Link} className='colors' to='/favorites' onClick={closeMenus}>Kedvenceim</Nav.Link> )}                   
+                        </Nav>
 
                     <div className='user-menu-wrapper' ref={dropdownRef}>
                         <button type='button' className='profile-trigger' onClick={toggleDropdown} aria-label='Felhasználói menü'>
@@ -132,6 +133,7 @@ const Header = () => {
                                 {token ? (
                                     <>
                                         <Link to='/profile' className='profile-dropdown-item' onClick={closeMenus}>Profil</Link>
+                                        <Link to='/favorites' className='profile-dropdown-item' onClick={closeMenus}>Kedvenceim</Link>
                                         {isAdmin && (
                                             <button onClick={handleDownloadAdminApp} className='profile-dropdown-item' type='button'>Admin App Letöltése</button>
                                         )}

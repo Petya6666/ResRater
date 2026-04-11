@@ -7,6 +7,7 @@ import Register from './pages/Register.jsx'
 import Login from './pages/Login.jsx'
 import Profile from './pages/Profile.jsx';
 import NewRestaurant from './pages/NewRestaurant.jsx';
+import Favourites from './pages/Favourites.jsx';
 import FloatingLines from './pages/FloatingLines.jsx';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -41,6 +42,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/favorites" element={<Favourites />} />
           </Routes>
         </Router>
       </div>

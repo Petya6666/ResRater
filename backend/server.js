@@ -800,6 +800,98 @@ app.get('/profile', authenticateToken, (req, res) => {
     res.json(req.user);
 });
 
+// Kedvencek kezelése
+// Kedvenc éttermek lekérése 
+app.get('/kedvencek', authenticateToken, (req, res) => {
+    const userId = req.user.id;
+    const sql = 'SELECT etterem_id FROM kedvencek WHERE felhasznalo_id = ? ORDER BY letrehozva DESC';
+
+    db.query(sql, [userId], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(rows || []);
+    });
+});
+
+// Kedvenc étterem hozzáadása
+app.post('/kedvencek', authenticateToken, (req, res) => {
+    const { etterem_id } = req.body;
+    const userId = req.user.id;
+
+    if (!etterem_id) {
+        return res.status(400).json({ error: 'Étterem azonosító kötelező.' });
+    }
+
+    // megnézzük, hogy az étterem már a kedvencek között van-e
+    const checkSql = 'SELECT id FROM kedvencek WHERE felhasznalo_id = ? AND etterem_id = ? LIMIT 1';
+    db.query(checkSql, [userId, etterem_id], (checkErr, rows) => {
+        if (checkErr) {
+            console.error('Database error:', checkErr);
+            return res.status(500).json({ error: checkErr.message });
+        }
+
+        if (rows && rows.length > 0) {
+            return res.status(409).json({ error: 'Már a kedvencek között van.' });
+        }
+
+        // beszúrjuk a kedvencet
+        const insertSql = 'INSERT INTO kedvencek (felhasznalo_id, etterem_id) VALUES (?, ?)';
+        db.query(insertSql, [userId, etterem_id], (insErr, result) => {
+            if (insErr) {
+                console.error('Database error:', insErr);
+                return res.status(500).json({ error: insErr.message });
+            }
+
+            return res.status(201).json({
+                message: 'Étterem hozzáadva a kedvencekhez.',
+                kedvenc_id: result.insertId
+            });
+        });
+    });
+});
+
+// Kedvenc étterem törlése
+app.delete('/kedvencek/:etterem_id', authenticateToken, (req, res) => {
+    const { etterem_id } = req.params;
+    const userId = req.user.id;
+
+    if (!etterem_id) {
+        return res.status(400).json({ error: 'Étterem azonosító kötelező.' });
+    }
+
+    const sql = 'DELETE FROM kedvencek WHERE felhasznalo_id = ? AND etterem_id = ? LIMIT 1';
+    db.query(sql, [userId, etterem_id], (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Kedvenc nem található.' });
+        }
+
+        return res.json({ message: 'Étterem eltávolítva a kedvencekből.' });
+    });
+});
+
+// Kedvenc étterem ellenőrzése
+app.get('/kedvencek/:etterem_id', authenticateToken, (req, res) => {
+    const { etterem_id } = req.params;
+    const userId = req.user.id;
+
+    const sql = 'SELECT id FROM kedvencek WHERE felhasznalo_id = ? AND etterem_id = ? LIMIT 1';
+    db.query(sql, [userId, etterem_id], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        return res.json({ isFavorite: rows && rows.length > 0 });
+    });
+});
+
 
 
 app.listen(port, () => {

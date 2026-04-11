@@ -20,6 +20,11 @@ const Restaurant = () => {
   const [error, setError] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
 
+  // favorites
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [favoriteError, setFavoriteError] = useState(null);
+
   // ratings
   const [ratingLoading, setRatingLoading] = useState(false);
   const [ratingError, setRatingError] = useState(null);
@@ -117,9 +122,70 @@ const Restaurant = () => {
     
   }, [id, currentUserId]);
 
+  const checkIsFavorite = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsFavorite(false);
+      return;
+    }
+
+    try {
+      const result = await axios.get(`http://localhost:3000/kedvencek/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setIsFavorite(result?.data?.isFavorite ?? false);
+    } catch (err) {
+      console.error('Hiba a kedvenc állapot lekérése során:', err);
+      setIsFavorite(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id && currentUserId) {
+      checkIsFavorite();
+    } else if (!currentUserId) {
+      setIsFavorite(false);
+    }
+  }, [id, currentUserId]);
+
   const refreshKommentek = async () => {
     const result = await axios.get(`http://localhost:3000/kommentek/${id}`);
     setKommentek(Array.isArray(result.data) ? result.data : []);
+  };
+
+  const handleFavoriteToggle = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setFavoriteError('Kedvencek kezeléséhez be kell jelentkezni.');
+      return;
+    }
+
+    try {
+      setFavoriteLoading(true);
+      setFavoriteError(null);
+
+      if (isFavorite) {
+        // Remove from favorites
+        await axios.delete(`http://localhost:3000/kedvencek/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsFavorite(false);
+      } else {
+        // Add to favorites
+        await axios.post(
+          'http://localhost:3000/kedvencek',
+          { etterem_id: Number(id) },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsFavorite(true);
+      }
+    } catch (err) {
+      console.error('Hiba a kedvenc kezelése során:', err);
+      const msg = err?.response?.data?.error || 'Nem sikerült kezelni a kedvenvet';
+      setFavoriteError(msg);
+    } finally {
+      setFavoriteLoading(false);
+    }
   };
 
   const renderStars = (value, onChange) => {
@@ -279,9 +345,22 @@ const Restaurant = () => {
       <Header />
       <div className='page-shell mt-4'>
         <div className='page-content'>
-          <button className='piros mb-3' onClick={() => navigate('/restaurants')}>
-            ← Vissza
-          </button>
+          <div className='d-flex justify-content-between align-items-center mb-3'>
+            <button className='piros' onClick={() => navigate('/restaurants')}>
+              ← Vissza
+            </button>
+            {currentUserId && (
+              <button 
+                className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`}
+                onClick={handleFavoriteToggle}
+                disabled={favoriteLoading}
+                title={isFavorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'}
+              >
+                {favoriteLoading ? '⛔...⛔' : (isFavorite ? '❤️ Kedvenc' : '🤍 Favorit hozzáadása')}
+              </button>
+            )}
+          </div>
+          {favoriteError && <div className='text-danger mb-2'>{favoriteError}</div>}
           
           <div className='doboz'>
             <div className='row g-3'>
