@@ -9,20 +9,16 @@ namespace resrater_adminfelulet
     // Bejelentkezés lehetséges eredményei
     public enum BejelentkezesEredmeny
     {
-        Sikeres,    // helyes adatok, admin szerepkör
-        NemAdmin,   // helyes adatok, de nem admin
-        Hibas       // helytelen felhasználónév vagy jelszó
+        Sikeres,    
+        NemAdmin,   
+        Hibas      
     }
 
     public static class AdatbazisHelper
     {
-        // Kapcsolati sztring - localhost, port 3307, resrater_db adatbázis
         private static string kapcsolatiSztring =
             "Server=localhost;Port=3307;Database=resrater_db;Uid=root;Pwd=;CharSet=utf8mb4;";
 
-        // =====================
-        // FELHASZNÁLÓK
-        // =====================
 
         // Összes felhasználó lekérése, opcionálisan szűrve felhasználónévre
         public static List<Felhasznalo> FelhasznalokLekeres(string kereses = "")
@@ -107,9 +103,6 @@ namespace resrater_adminfelulet
             }
         }
 
-        // =====================
-        // ÉTTERMEK
-        // =====================
 
         // Összes étterem lekérése
         public static List<Etterem> EttermekLekeres()
@@ -239,10 +232,6 @@ namespace resrater_adminfelulet
             }
         }
 
-        // =====================
-        // DASHBOARD STATISZTIKÁK
-        // =====================
-
         // Felhasználók száma
         public static int FelhasznalokSzama()
         {
@@ -283,12 +272,9 @@ namespace resrater_adminfelulet
             }
         }
 
-        // =====================
-        // BEJELENTKEZÉS
-        // =====================
 
-        // Admin hitelesítés: ellenőrzi a felhasználónevet, jelszót és az admin szerepkört.
-        // A jelszó ellenőrzés bcrypt hash összehasonlítással történik.
+
+
         public static BejelentkezesEredmeny AdminBejelentkezes(string felhasznev, string jelszo)
         {
             try
@@ -305,7 +291,6 @@ namespace resrater_adminfelulet
 
                 if (!olvaso.Read())
                 {
-                    // Nincs ilyen felhasználó
                     return BejelentkezesEredmeny.Hibas;
                 }
 
@@ -313,12 +298,24 @@ namespace resrater_adminfelulet
                 string szerep = olvaso.GetString("szerep");
 
                 // Jelszó ellenőrzés bcrypt hash segítségével
-                if (!BCrypt.Net.BCrypt.Verify(jelszo, adatbazisJelszo))
+                bool bcryptOk = false;
+
+                // Csak akkor próbáljuk meg a bcrypt ellenőrzést, ha tényleg bcrypt hash
+                if (adatbazisJelszo.StartsWith("$2") && adatbazisJelszo.Length == 60)
                 {
-                    return BejelentkezesEredmeny.Hibas;
+                    bcryptOk = BCrypt.Net.BCrypt.Verify(jelszo, adatbazisJelszo);
+                }
+                else
+                {
+                    // Nem bcrypt → sima szöveg összehasonlítás
+                    if (jelszo != adatbazisJelszo)
+                    {
+                        return BejelentkezesEredmeny.Hibas;
+                    }
                 }
 
-                // Szerepkör ellenőrzés
+                olvaso.Close();
+
                 if (szerep != "admin")
                 {
                     return BejelentkezesEredmeny.NemAdmin;

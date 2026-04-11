@@ -11,9 +11,6 @@ namespace resrater_adminfelulet.Models
         private static string connectionString =
             "Server=localhost;Port=3307;Database=resrater_db;Uid=root;Pwd=;CharSet=utf8mb4;";
 
-        // =====================
-        // USER METHODS
-        // =====================
 
         // Get all users, optionally filtered by username search term
         public static List<User> GetAllUsers(string search = "")
@@ -78,9 +75,6 @@ namespace resrater_adminfelulet.Models
             }
         }
 
-        // =====================
-        // RESTAURANT METHODS
-        // =====================
 
         // Get all restaurants, optionally filtered by name
         public static List<Restaurant> GetAllRestaurants(string search = "")
@@ -226,9 +220,6 @@ namespace resrater_adminfelulet.Models
             }
         }
 
-        // =====================
-        // STATISTICS METHODS
-        // =====================
 
         // Returns the total number of users
         public static int GetUserCount()
@@ -267,7 +258,6 @@ namespace resrater_adminfelulet.Models
             }
             catch
             {
-                // Silently return 0 so the dashboard still displays even when the DB is unavailable
                 return 0;
             }
         }
