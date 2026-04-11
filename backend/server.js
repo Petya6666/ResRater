@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const JWT_SECRET = 'very_secret_key'; // move to .env later
 const cors = require('cors');
 const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
 
 app.use(cors());
@@ -483,7 +484,7 @@ app.post('/login', (req, res) => {
     }
 
     const sql = `
-        SELECT felhasznalo_id, felhasznev, jelszo
+        SELECT felhasznalo_id, felhasznev, jelszo, szerep
         FROM felhasznalok
         WHERE email = ? OR felhasznev = ?
         LIMIT 1
@@ -510,7 +511,8 @@ app.post('/login', (req, res) => {
             const token = jwt.sign(
                 {
                     id: user.felhasznalo_id,
-                    felhasznev: user.felhasznev
+                    felhasznev: user.felhasznev,
+                    szerep: user.szerep
                 },
                 JWT_SECRET,
                 { expiresIn: '1h' }
@@ -521,7 +523,8 @@ app.post('/login', (req, res) => {
                 token,
                 user: {
                     id: user.felhasznalo_id,
-                    felhasznev: user.felhasznev
+                    felhasznev: user.felhasznev,
+                    szerep: user.szerep
                 }
             });
 
@@ -536,7 +539,8 @@ app.post('/login', (req, res) => {
 app.get('/me', authenticateToken, (req, res) => {
     res.json({
         id: req.user.id,
-        felhasznev: req.user.felhasznev
+        felhasznev: req.user.felhasznev,
+        szerep: req.user.szerep || 'felhasznalo'
     });
 });
 
@@ -756,10 +760,46 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// Admin panel letöltése (csak admin felhasználónak)
+app.get('/download-admin-app', authenticateToken, requireAdmin, (req, res) => {
+    const filePath = path.join(__dirname, 'files', 'adminapp.zip');
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'A fájl nem található.' });
+    }
+
+    return res.download(filePath, 'adminapp.zip');
+});
+
+function requireAdmin(req, res, next) {
+    const sql = 'SELECT szerep FROM felhasznalok WHERE felhasznalo_id = ? LIMIT 1';
+
+    db.query(sql, [req.user.id], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (!rows || rows.length === 0) {
+            return res.status(401).json({ error: 'Felhasználó nem található.' });
+        }
+
+        if (rows[0].szerep !== 'admin') {
+            return res.status(403).json({ error: 'Nincs jogosultságod.' });
+        }
+
+        return next();
+    });
+}
+
+
+
+
 //védelem alatt álló profil oldal
 app.get('/profile', authenticateToken, (req, res) => {
     res.json(req.user);
 });
+
 
 
 app.listen(port, () => {

@@ -9,6 +9,7 @@ import Navbar from 'react-bootstrap/Navbar';
 const Header = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('szerep') === 'admin');
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
@@ -24,15 +25,75 @@ const Header = () => {
         return () => document.removeEventListener('mousedown', handleOutsideClick);
     }, []);
 
+    useEffect(() => {
+        const loadRole = async () => {
+            if (!token) {
+                setIsAdmin(false);
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/me', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    setIsAdmin(false);
+                    return;
+                }
+
+                const data = await res.json();
+                const admin = data?.szerep === 'admin';
+                setIsAdmin(admin);
+                localStorage.setItem('szerep', admin ? 'admin' : 'felhasznalo');
+            } catch {
+                setIsAdmin(false);
+            }
+        };
+
+        loadRole();
+    }, [token]);
+
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
     };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('szerep');
         setShowDropdown(false);
         setExpanded(false);
+        setIsAdmin(false);
         navigate('/');
+    };
+
+    const handleDownloadAdminApp = async () => {
+        if (!token) return;
+
+        try {
+            const res = await fetch('http://localhost:3000/download-admin-app', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                alert(data.error || 'A letöltés nem sikerült.');
+                return;
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'adminapp.zip';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            closeMenus();
+        } catch {
+            alert('Hiba történt a letöltés közben.');
+        }
     };
 
     const closeMenus = () => {
@@ -58,7 +119,7 @@ const Header = () => {
                     <Nav className='navbar-links me-auto'>
                         <Nav.Link as={Link} className='colors' to='/' onClick={closeMenus}>Kezdőlap</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/restaurants' onClick={closeMenus}>Éttermek</Nav.Link>
-                        <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Új étterem</Nav.Link>
+                        <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Étterem regisztrálása</Nav.Link>
                     </Nav>
 
                     <div className='user-menu-wrapper' ref={dropdownRef}>
@@ -71,6 +132,9 @@ const Header = () => {
                                 {token ? (
                                     <>
                                         <Link to='/profile' className='profile-dropdown-item' onClick={closeMenus}>Profil</Link>
+                                        {isAdmin && (
+                                            <button onClick={handleDownloadAdminApp} className='profile-dropdown-item' type='button'>Admin App Letöltése</button>
+                                        )}
                                         <button onClick={handleLogout} className='profile-dropdown-item' type='button'>Kijelentkezés</button>
                                     </>
                                 ) : (

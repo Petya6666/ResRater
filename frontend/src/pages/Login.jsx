@@ -4,17 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import '../styles/index.css';
 
-/*
-később így kell használni api hívásoknál a tokent:
-
-const token = localStorage.getItem('token');
-
-axios.get('http://localhost:3000/profile', {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-});
-*/
 
 const Login = () => {
     const navigate = useNavigate();
@@ -63,6 +52,7 @@ const Login = () => {
             if (response.data.user) {
                 localStorage.setItem('userId', response.data.user.id);
                 localStorage.setItem('felhasznev', response.data.user.felhasznev);
+                localStorage.setItem('szerep', response.data.user.szerep || 'felhasznalo');
             }
 
             alert(response.data.message);
