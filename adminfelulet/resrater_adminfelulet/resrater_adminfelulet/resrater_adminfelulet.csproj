@@ -17,6 +17,8 @@
   <ItemGroup>
     <!-- MySQL adatbázis kapcsolathoz szükséges csomag -->
     <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <!-- Bcrypt jelszó hash ellenőrzéshez -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>

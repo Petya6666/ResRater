@@ -288,8 +288,7 @@ namespace resrater_adminfelulet
         // =====================
 
         // Admin hitelesítés: ellenőrzi a felhasználónevet, jelszót és az admin szerepkört.
-        // Megjegyzés: jelenleg sima szöveges jelszó-összehasonlítás történik.
-        // Éles alkalmazásban bcrypt könyvtárral kell összehasonlítani a hash-elt jelszót!
+        // A jelszó ellenőrzés bcrypt hash összehasonlítással történik.
         public static BejelentkezesEredmeny AdminBejelentkezes(string felhasznev, string jelszo)
         {
             try
@@ -313,9 +312,8 @@ namespace resrater_adminfelulet
                 string adatbazisJelszo = olvaso.GetString("jelszo");
                 string szerep = olvaso.GetString("szerep");
 
-                // Jelszó ellenőrzés (sima szöveges összehasonlítás)
-                // TODO: bcrypt: BCrypt.Net.BCrypt.Verify(jelszo, adatbazisJelszo)
-                if (jelszo != adatbazisJelszo)
+                // Jelszó ellenőrzés bcrypt hash segítségével
+                if (!BCrypt.Net.BCrypt.Verify(jelszo, adatbazisJelszo))
                 {
                     return BejelentkezesEredmeny.Hibas;
                 }
