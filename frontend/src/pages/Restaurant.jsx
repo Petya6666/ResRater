@@ -378,7 +378,7 @@ const Restaurant = () => {
                 <div className='mb-3'>
                   <h5>Elérhetőség:</h5>
                   <p><strong>Telefon:</strong> {etterem.telefon}</p>
-                  <p><strong>Város:</strong> {etterem.varos}</p>
+                  <p><strong>Cím:</strong> {etterem.varos}, {etterem.utca} {etterem.hazszam}</p>
                   <p><strong>Irányítószám:</strong> {etterem.iranyitoszam}</p>
                 </div>
                 
