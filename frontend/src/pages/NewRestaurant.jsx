@@ -14,6 +14,8 @@ const NewRestaurant = () => {
     telefon: "",
     leiras: "",
     iranyitoszam: "",
+    utca: "",
+    hazszam: "",
     kategoria_id: ""
   });
 
@@ -172,6 +174,8 @@ const NewRestaurant = () => {
         telefon: form.telefon.trim(),
         leiras: form.leiras.trim(),
         iranyitoszam: Number.parseInt(form.iranyitoszam, 10),
+        utca: form.utca.trim(),
+        hazszam: form.hazszam.trim(),
         kategoria_id: form.kategoria_id ? Number.parseInt(form.kategoria_id, 10) : null,
         kepFajlNev
       };
@@ -268,6 +272,30 @@ const NewRestaurant = () => {
                       {selectedVarosLabel && (
                         <div className='form-text'>Kiválasztva: {selectedVarosLabel}</div>
                       )}
+                    </div>
+                    <div className='mb-3'>
+                      <label className='form-label' htmlFor='utca'>Utca *</label>
+                      <input
+                        id='utca'
+                        name='utca'
+                        className='form-control'
+                        value={form.utca}
+                        onChange={onChange}
+                        autoComplete='off'
+                        required
+                      />
+                    </div>
+                    <div className='mb-3'>
+                      <label className='form-label' htmlFor='hazszam'>Házszám *</label>
+                      <input
+                        id='hazszam'
+                        name='hazszam'
+                        className='form-control'
+                        value={form.hazszam}
+                        onChange={onChange}
+                        autoComplete='off'
+                        required
+                      />
                     </div>
 
                     <div className='mb-3'>

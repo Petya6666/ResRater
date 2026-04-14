@@ -580,7 +580,7 @@ app.post('/kepek/upload', authenticateToken, upload.single('image'), (req, res) 
 //  Új étterem létrehozása (bejelentkezés kell hozzá) 
 // body: { nev, telefon, leiras, iranyitoszam, kategoria_id?, kepFajlNev? }
 app.post('/ettermek', authenticateToken, (req, res) => {
-    const { nev, telefon, leiras, iranyitoszam, kategoria_id, kepFajlNev } = req.body;
+    const { nev, telefon, leiras, iranyitoszam, utca, hazszam, kategoria_id, kepFajlNev } = req.body;
 
     if (!nev || typeof nev !== 'string' || nev.trim().length < 2) {
         return res.status(400).json({ error: 'Az étterem neve kötelező (min. 2 karakter).' });
@@ -603,6 +603,9 @@ app.post('/ettermek', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'Érvénytelen kategória.' });
     }
 
+    const street = typeof utca === 'string' && utca.trim().length ? utca.trim() : null;
+    const house = typeof hazszam === 'string' && hazszam.trim().length ? hazszam.trim() : null;
+
     const desc = (typeof leiras === 'string' ? leiras.trim() : '').slice(0, 2000);
 
     // 1) város létezés ellenőrzése
@@ -617,11 +620,11 @@ app.post('/ettermek', authenticateToken, (req, res) => {
 
         // 2) étterem beszúrás
         const insertSql = `
-            INSERT INTO ettermek (nev, telefon, leiras, iranyitoszam, kategoria_id)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO ettermek (nev, telefon, leiras, iranyitoszam, utca, hazszam, kategoria_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
-        db.query(insertSql, [nev.trim(), telefon.trim(), desc.length ? desc : null, zip, katId], (insErr, insResult) => {
+        db.query(insertSql, [nev.trim(), telefon.trim(), desc.length ? desc : null, zip, street, house, katId], (insErr, insResult) => {
             if (insErr) {
                 console.error('Database error:', insErr);
                 return res.status(500).json({ error: insErr.message });
