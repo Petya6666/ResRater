@@ -391,12 +391,12 @@ const Restaurant = () => {
                  {currentUserId && (
                   <div className="d-flex justify-content-end mt-2">
                     <button 
-                      className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`}
+                      className={`btn ${isFavorite ? 'btn-warning' : ' btn-outline-warning '}`}
                       onClick={handleFavoriteToggle}
                       disabled={favoriteLoading}
                       title={isFavorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'}
                     >
-                      {favoriteLoading ? '⛔...⛔' : (isFavorite ? '❤️ Kedvenc' : '🤍 Kedvenc hozzáadása')}
+                      {favoriteLoading ? '⛔...⛔' : (isFavorite ? ' ★ Kedvenc' : ' ☆ Kedvenc hozzáadása')}
                     </button>
                   </div>
             )}
