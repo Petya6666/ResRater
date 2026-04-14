@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Apr 11, 2026 at 10:07 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Gép: 127.0.0.1:3307
+-- Létrehozás ideje: 2026. Ápr 14. 09:22
+-- Kiszolgáló verziója: 10.4.28-MariaDB
+-- PHP verzió: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `resrater_db`
+-- Adatbázis: `resrater_db`
 --
 CREATE DATABASE IF NOT EXISTS `resrater_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `resrater_db`;
@@ -26,7 +26,7 @@ USE `resrater_db`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ertekelesek`
+-- Tábla szerkezet ehhez a táblához `ertekelesek`
 --
 
 DROP TABLE IF EXISTS `ertekelesek`;
@@ -42,7 +42,7 @@ CREATE TABLE `ertekelesek` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- Dumping data for table `ertekelesek`
+-- A tábla adatainak kiíratása `ertekelesek`
 --
 
 INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atlag`, `datum`, `etelminoseg`, `kiszolgalas`, `hangulat`) VALUES
@@ -67,7 +67,7 @@ INSERT INTO `ertekelesek` (`ertekeles_id`, `etterem_id`, `felhasznalo_id`, `atla
 (19, 1, 16, 3.33, '2026-03-05 12:11:44', 2, 4, 4);
 
 --
--- Triggers `ertekelesek`
+-- Eseményindítók `ertekelesek`
 --
 DROP TRIGGER IF EXISTS `trig_atlagszamitas`;
 DELIMITER $$
@@ -92,7 +92,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ettermek`
+-- Tábla szerkezet ehhez a táblához `ettermek`
 --
 
 DROP TABLE IF EXISTS `ettermek`;
@@ -103,29 +103,31 @@ CREATE TABLE `ettermek` (
   `leiras` text NOT NULL,
   `kategoria_id` int(5) NOT NULL,
   `iranyitoszam` int(4) NOT NULL,
+  `utca` varchar(100) NOT NULL,
+  `hazszam` varchar(10) NOT NULL,
   `jovahagyott` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- Dumping data for table `ettermek`
+-- A tábla adatainak kiíratása `ettermek`
 --
 
-INSERT INTO `ettermek` (`etterem_id`, `nev`, `telefon`, `leiras`, `kategoria_id`, `iranyitoszam`, `jovahagyott`) VALUES
-(1, 'BurgerPart', '+365148769', 'Kézműves burgerek, ropogós krumpli és jó hangulat – ez a BurgerPart receptje. Tökéletes hely egy gyors falatra a barátokkal vagy egy laza ebédszünetre.', 2, 1117, 1),
-(2, 'Legjobb csárda', '+3642069', 'A Legjobb Csárda a hagyományos magyar vendégszeretet otthona, ahol az igazi falusi ízek és a jókedv kéz a kézben járnak. Frissen készült, házias ételeink – a gőzölgő gulyástól a ropogós rántott húsig – a nagymama konyhájának hangulatát idézik. A barátságos kiszolgálás, a rusztikus berendezés és a vidám zene gondoskodik róla, hogy minden vendég úgy érezze: itt tényleg otthon van.', 1, 6720, 1),
-(3, 'Deák Ferenc Falatozó', '+3655877', 'A Deák Ferenc Falatozó egy hangulatos, családias étterem, ahol a hagyományos magyar ízek találkoznak a modern konyha könnyedségével. Éttermünk szívében a vendég a legfontosabb: friss, helyi alapanyagokból készült ételeinket barátságos kiszolgálással és otthonos környezetben kínáljuk. Legyen szó egy gyors ebédről, baráti vacsoráról vagy hétvégi lakomáról, nálunk mindig jóllakottan és mosollyal az arcán távozik minden vendég.', 2, 9022, 1),
-(4, 'Kacsa a Ködben', '+36598742', 'A Kacsa a Ködben egy hangulatos, kissé titokzatos étterem, ahol a gasztronómia és a művészet találkozik. Rejtett utcában, lágy fények és kellemes zene kíséretében várjuk vendégeinket, hogy felfedezzék a magyar és nemzetközi konyha különleges fúzióját. Éttermünk védjegye a kreatív kacsás fogások sora – a klasszikus sült kacsától a modern, gyümölcsös variációkig.', 2, 6720, 1),
-(5, 'Lángoszóna', '+36548798', 'A Lángoszóna a magyar street food lelke. Klasszikus és felturbózott lángosok, fokhagymás illat és friss tejföl – hagyomány, ami belefér a kezedbe.', 1, 1117, 1),
-(6, 'Piros Paprika Vendéglő', '+36985678', 'A Piros Paprika Vendéglő a magyar ízek színes otthona, ahol minden falatban ott van a tradíció és a szenvedély. Friss, hazai alapanyagokból készült ételeinket gazdagon fűszerezzük – természetesen jó adag szeretettel és egy csipetnyi paprikával. Barátságos hangulat, házias ízek és bőséges adagok várják mindazokat, akik szeretik a klasszikus magyar konyhát.', 2, 9022, 1),
-(7, 'Aranykanál Bisztró', '+3696554432', 'Az Aranykanál Bisztró elegáns, mégis otthonos hely, ahol a modern magyar konyha kifinomult ízei várják a vendégeket.', 2, 6720, 1),
-(8, 'Bors & Lélek', '+3662314875', 'A Bors & Lélek modern hangulatú étterem, ahol a bor és a fűszer találkozik – magyaros ételek újragondolva.', 1, 1117, 1),
-(9, 'Hot & Go', '+3652478215', 'A Hot & Go fűszeres gyorsételeket kínál lendületes, fiatalos környezetben – tökéletes útközben is.', 1, 6720, 1),
-(10, 'ZabálÓra', '+3672611998', 'A ZabálÓra a rohanó vendégek kedvence: friss, bőséges és gyors ételek barátságos hangulatban.', 2, 1117, 0);
+INSERT INTO `ettermek` (`etterem_id`, `nev`, `telefon`, `leiras`, `kategoria_id`, `iranyitoszam`, `utca`, `hazszam`, `jovahagyott`) VALUES
+(1, 'BurgerPart', '+365148769', 'Kézműves burgerek, ropogós krumpli és jó hangulat – ez a BurgerPart receptje. Tökéletes hely egy gyors falatra a barátokkal vagy egy laza ebédszünetre.', 2, 1117, 'Fehérvári út', '47', 1),
+(2, 'Legjobb csárda', '+3642069', 'A Legjobb Csárda a hagyományos magyar vendégszeretet otthona, ahol az igazi falusi ízek és a jókedv kéz a kézben járnak. Frissen készült, házias ételeink – a gőzölgő gulyástól a ropogós rántott húsig – a nagymama konyhájának hangulatát idézik. A barátságos kiszolgálás, a rusztikus berendezés és a vidám zene gondoskodik róla, hogy minden vendég úgy érezze: itt tényleg otthon van.', 1, 6720, 'Fő utca', '12', 1),
+(3, 'Deák Ferenc Falatozó', '+3655877', 'A Deák Ferenc Falatozó egy hangulatos, családias étterem, ahol a hagyományos magyar ízek találkoznak a modern konyha könnyedségével. Éttermünk szívében a vendég a legfontosabb: friss, helyi alapanyagokból készült ételeinket barátságos kiszolgálással és otthonos környezetben kínáljuk. Legyen szó egy gyors ebédről, baráti vacsoráról vagy hétvégi lakomáról, nálunk mindig jóllakottan és mosollyal az arcán távozik minden vendég.', 2, 9022, 'Baross Gábor út', '18', 1),
+(4, 'Kacsa a Ködben', '+36598742', 'A Kacsa a Ködben egy hangulatos, kissé titokzatos étterem, ahol a gasztronómia és a művészet találkozik. Rejtett utcában, lágy fények és kellemes zene kíséretében várjuk vendégeinket, hogy felfedezzék a magyar és nemzetközi konyha különleges fúzióját. Éttermünk védjegye a kreatív kacsás fogások sora – a klasszikus sült kacsától a modern, gyümölcsös variációkig.', 2, 6720, 'Széchenyi tér', '5', 1),
+(5, 'Lángoszóna', '+36548798', 'A Lángoszóna a magyar street food lelke. Klasszikus és felturbózott lángosok, fokhagymás illat és friss tejföl – hagyomány, ami belefér a kezedbe.', 1, 1117, 'Bartók Béla út', '93', 1),
+(6, 'Piros Paprika Vendéglő', '+36985678', 'A Piros Paprika Vendéglő a magyar ízek színes otthona, ahol minden falatban ott van a tradíció és a szenvedély. Friss, hazai alapanyagokból készült ételeinket gazdagon fűszerezzük – természetesen jó adag szeretettel és egy csipetnyi paprikával. Barátságos hangulat, házias ízek és bőséges adagok várják mindazokat, akik szeretik a klasszikus magyar konyhát.', 2, 9022, 'Király utca', '21', 1),
+(7, 'Aranykanál Bisztró', '+3696554432', 'Az Aranykanál Bisztró elegáns, mégis otthonos hely, ahol a modern magyar konyha kifinomult ízei várják a vendégeket.', 2, 6720, 'Szent István út', '30', 1),
+(8, 'Bors & Lélek', '+3662314875', 'A Bors & Lélek modern hangulatú étterem, ahol a bor és a fűszer találkozik – magyaros ételek újragondolva.', 1, 1117, 'Petőfi Sándor utca', '8', 1),
+(9, 'Hot & Go', '+3652478215', 'A Hot & Go fűszeres gyorsételeket kínál lendületes, fiatalos környezetben – tökéletes útközben is.', 1, 6720, 'Rákóczi út', '54', 1),
+(10, 'ZabálÓra', '+3672611998', 'A ZabálÓra a rohanó vendégek kedvence: friss, bőséges és gyors ételek barátságos hangulatban.', 2, 1117, 'Váci út', '112', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `felhasznalok`
+-- Tábla szerkezet ehhez a táblához `felhasznalok`
 --
 
 DROP TABLE IF EXISTS `felhasznalok`;
@@ -133,13 +135,13 @@ CREATE TABLE `felhasznalok` (
   `felhasznalo_id` int(10) NOT NULL,
   `felhasznev` varchar(25) NOT NULL,
   `jelszo` varchar(100) NOT NULL,
-  `email` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `reg_datum` date NOT NULL DEFAULT current_timestamp(),
   `szerep` enum('felhasznalo','admin') NOT NULL DEFAULT 'felhasznalo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- Dumping data for table `felhasznalok`
+-- A tábla adatainak kiíratása `felhasznalok`
 --
 
 INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `reg_datum`, `szerep`) VALUES
@@ -153,7 +155,7 @@ INSERT INTO `felhasznalok` (`felhasznalo_id`, `felhasznev`, `jelszo`, `email`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kategoriak`
+-- Tábla szerkezet ehhez a táblához `kategoriak`
 --
 
 DROP TABLE IF EXISTS `kategoriak`;
@@ -163,7 +165,7 @@ CREATE TABLE `kategoriak` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `kategoriak`
+-- A tábla adatainak kiíratása `kategoriak`
 --
 
 INSERT INTO `kategoriak` (`kategoria_id`, `kategoria_nev`) VALUES
@@ -177,7 +179,7 @@ INSERT INTO `kategoriak` (`kategoria_id`, `kategoria_nev`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kedvencek`
+-- Tábla szerkezet ehhez a táblához `kedvencek`
 --
 
 DROP TABLE IF EXISTS `kedvencek`;
@@ -189,7 +191,7 @@ CREATE TABLE `kedvencek` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `kedvencek`
+-- A tábla adatainak kiíratása `kedvencek`
 --
 
 INSERT INTO `kedvencek` (`id`, `felhasznalo_id`, `etterem_id`, `letrehozva`) VALUES
@@ -199,7 +201,7 @@ INSERT INTO `kedvencek` (`id`, `felhasznalo_id`, `etterem_id`, `letrehozva`) VAL
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kepek`
+-- Tábla szerkezet ehhez a táblához `kepek`
 --
 
 DROP TABLE IF EXISTS `kepek`;
@@ -213,7 +215,7 @@ CREATE TABLE `kepek` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- Dumping data for table `kepek`
+-- A tábla adatainak kiíratása `kepek`
 --
 
 INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_datum`, `eredeti_nev`) VALUES
@@ -231,7 +233,7 @@ INSERT INTO `kepek` (`kep_id`, `etterem_id`, `fajl_nev`, `leiras`, `feltoltes_da
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kommentek`
+-- Tábla szerkezet ehhez a táblához `kommentek`
 --
 
 DROP TABLE IF EXISTS `kommentek`;
@@ -244,7 +246,7 @@ CREATE TABLE `kommentek` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `kommentek`
+-- A tábla adatainak kiíratása `kommentek`
 --
 
 INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyzes`, `letrehoz_ido`) VALUES
@@ -256,7 +258,7 @@ INSERT INTO `kommentek` (`komment_id`, `felhasznalo_id`, `etterem_id`, `megjegyz
 -- --------------------------------------------------------
 
 --
--- Table structure for table `varosok`
+-- Tábla szerkezet ehhez a táblához `varosok`
 --
 
 DROP TABLE IF EXISTS `varosok`;
@@ -266,7 +268,7 @@ CREATE TABLE `varosok` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `varosok`
+-- A tábla adatainak kiíratása `varosok`
 --
 
 INSERT INTO `varosok` (`iranyitoszam`, `varos`) VALUES
@@ -275,11 +277,11 @@ INSERT INTO `varosok` (`iranyitoszam`, `varos`) VALUES
 (9022, 'Győr');
 
 --
--- Indexes for dumped tables
+-- Indexek a kiírt táblákhoz
 --
 
 --
--- Indexes for table `ertekelesek`
+-- A tábla indexei `ertekelesek`
 --
 ALTER TABLE `ertekelesek`
   ADD PRIMARY KEY (`ertekeles_id`),
@@ -287,7 +289,7 @@ ALTER TABLE `ertekelesek`
   ADD KEY `etterem_id` (`etterem_id`);
 
 --
--- Indexes for table `ettermek`
+-- A tábla indexei `ettermek`
 --
 ALTER TABLE `ettermek`
   ADD PRIMARY KEY (`etterem_id`),
@@ -295,19 +297,19 @@ ALTER TABLE `ettermek`
   ADD KEY `FK_katgoria` (`kategoria_id`);
 
 --
--- Indexes for table `felhasznalok`
+-- A tábla indexei `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
   ADD PRIMARY KEY (`felhasznalo_id`);
 
 --
--- Indexes for table `kategoriak`
+-- A tábla indexei `kategoriak`
 --
 ALTER TABLE `kategoriak`
   ADD PRIMARY KEY (`kategoria_id`);
 
 --
--- Indexes for table `kedvencek`
+-- A tábla indexei `kedvencek`
 --
 ALTER TABLE `kedvencek`
   ADD PRIMARY KEY (`id`),
@@ -315,14 +317,14 @@ ALTER TABLE `kedvencek`
   ADD KEY `fk_kedvenc_etterem` (`etterem_id`);
 
 --
--- Indexes for table `kepek`
+-- A tábla indexei `kepek`
 --
 ALTER TABLE `kepek`
   ADD PRIMARY KEY (`kep_id`),
   ADD KEY `fk_kepek_id` (`etterem_id`);
 
 --
--- Indexes for table `kommentek`
+-- A tábla indexei `kommentek`
 --
 ALTER TABLE `kommentek`
   ADD PRIMARY KEY (`komment_id`),
@@ -330,90 +332,90 @@ ALTER TABLE `kommentek`
   ADD KEY `etterem_id` (`etterem_id`);
 
 --
--- Indexes for table `varosok`
+-- A tábla indexei `varosok`
 --
 ALTER TABLE `varosok`
   ADD PRIMARY KEY (`iranyitoszam`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- A kiírt táblák AUTO_INCREMENT értéke
 --
 
 --
--- AUTO_INCREMENT for table `ertekelesek`
+-- AUTO_INCREMENT a táblához `ertekelesek`
 --
 ALTER TABLE `ertekelesek`
   MODIFY `ertekeles_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `ettermek`
+-- AUTO_INCREMENT a táblához `ettermek`
 --
 ALTER TABLE `ettermek`
   MODIFY `etterem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `felhasznalok`
+-- AUTO_INCREMENT a táblához `felhasznalok`
 --
 ALTER TABLE `felhasznalok`
   MODIFY `felhasznalo_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- AUTO_INCREMENT for table `kategoriak`
+-- AUTO_INCREMENT a táblához `kategoriak`
 --
 ALTER TABLE `kategoriak`
   MODIFY `kategoria_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `kedvencek`
+-- AUTO_INCREMENT a táblához `kedvencek`
 --
 ALTER TABLE `kedvencek`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `kepek`
+-- AUTO_INCREMENT a táblához `kepek`
 --
 ALTER TABLE `kepek`
   MODIFY `kep_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `kommentek`
+-- AUTO_INCREMENT a táblához `kommentek`
 --
 ALTER TABLE `kommentek`
   MODIFY `komment_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- Constraints for dumped tables
+-- Megkötések a kiírt táblákhoz
 --
 
 --
--- Constraints for table `ertekelesek`
+-- Megkötések a táblához `ertekelesek`
 --
 ALTER TABLE `ertekelesek`
   ADD CONSTRAINT `ertekelesek_ibfk_1` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_felhasznalo_id` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`) ON DELETE SET NULL;
 
 --
--- Constraints for table `ettermek`
+-- Megkötések a táblához `ettermek`
 --
 ALTER TABLE `ettermek`
   ADD CONSTRAINT `FK_katgoria` FOREIGN KEY (`kategoria_id`) REFERENCES `kategoriak` (`kategoria_id`),
   ADD CONSTRAINT `fk_varos` FOREIGN KEY (`iranyitoszam`) REFERENCES `varosok` (`iranyitoszam`);
 
 --
--- Constraints for table `kedvencek`
+-- Megkötések a táblához `kedvencek`
 --
 ALTER TABLE `kedvencek`
   ADD CONSTRAINT `fk_kedvenc_etterem` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_kedvenc_user` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `kepek`
+-- Megkötések a táblához `kepek`
 --
 ALTER TABLE `kepek`
   ADD CONSTRAINT `fk_kepek_id` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`);
 
 --
--- Constraints for table `kommentek`
+-- Megkötések a táblához `kommentek`
 --
 ALTER TABLE `kommentek`
   ADD CONSTRAINT `kommentek_ibfk_1` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalok` (`felhasznalo_id`) ON DELETE SET NULL,
