@@ -120,7 +120,6 @@ const Header = () => {
                         <Nav.Link as={Link} className='colors' to='/' onClick={closeMenus}>Kezdőlap</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/restaurants' onClick={closeMenus}>Éttermek</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Étterem regisztrálása</Nav.Link>                 
-                        {localStorage.getItem('token') && (  <Nav.Link as={Link} className='colors' to='/favorites' onClick={closeMenus}>Kedvenceim</Nav.Link> )}                   
                         </Nav>
 
                     <div className='user-menu-wrapper' ref={dropdownRef}>

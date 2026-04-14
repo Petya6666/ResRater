@@ -692,11 +692,13 @@ app.get('/ettermek', (req, res) => {
             v.varos,
             ROUND(AVG(er.atlag), 2) AS atlag,
             MIN(k.fajl_nev) AS fajl_nev,
-            e.kategoria_id
+            e.kategoria_id,
+            ka.kategoria_nev
         FROM ettermek e
         INNER JOIN varosok v ON e.iranyitoszam = v.iranyitoszam
         LEFT JOIN ertekelesek er ON e.etterem_id = er.etterem_id
         LEFT JOIN kepek k ON e.etterem_id = k.etterem_id
+        LEFT JOIN kategoriak ka ON e.kategoria_id = ka.kategoria_id
     `;
 
     const where = [];
@@ -726,13 +728,12 @@ app.get('/ettermek', (req, res) => {
         params.push(maxAtlag);
     }
 
-    // Ha nincs értékelés, AVG = NULL. Min/max szűrés esetén ezeket alapból kizárjuk.
     const havingSql = having.length ? `HAVING ${having.join(' AND ')}` : '';
 
     const sql = `
         ${baseSql}
         ${whereSql}
-        GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos, e.kategoria_id
+        GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos, e.kategoria_id, ka.kategoria_nev
         ${havingSql}
         ORDER BY e.nev ASC
     `;

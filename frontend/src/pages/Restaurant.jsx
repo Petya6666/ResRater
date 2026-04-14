@@ -349,16 +349,7 @@ const Restaurant = () => {
             <button className='piros' onClick={() => navigate('/restaurants')}>
               ← Vissza
             </button>
-            {currentUserId && (
-              <button 
-                className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`}
-                onClick={handleFavoriteToggle}
-                disabled={favoriteLoading}
-                title={isFavorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'}
-              >
-                {favoriteLoading ? '⛔...⛔' : (isFavorite ? '❤️ Kedvenc' : '🤍 Favorit hozzáadása')}
-              </button>
-            )}
+           
           </div>
           {favoriteError && <div className='text-danger mb-2'>{favoriteError}</div>}
           
@@ -397,6 +388,18 @@ const Restaurant = () => {
                     <p>{etterem.kategoria}</p>
                   </div>
                 )}
+                 {currentUserId && (
+                  <div className="d-flex justify-content-end mt-2">
+                    <button 
+                      className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`}
+                      onClick={handleFavoriteToggle}
+                      disabled={favoriteLoading}
+                      title={isFavorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'}
+                    >
+                      {favoriteLoading ? '⛔...⛔' : (isFavorite ? '❤️ Kedvenc' : '🤍 Kedvenc hozzáadása')}
+                    </button>
+                  </div>
+            )}
               </div>
             </div>
           </div>
