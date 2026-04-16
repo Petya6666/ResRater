@@ -89,16 +89,26 @@ const NewRestaurant = () => {
     if (!form.nev.trim()) return "A név kötelező.";
     if (!form.telefon.trim()) return "A telefonszám kötelező.";
     if (!form.iranyitoszam) return "Az irányítószám kötelező.";
+    if (!form.leiras) return "Az leirás kötelező.";
+    if (!form.kategoria_id) return "A kategória megadása kötelező.";
+    if (!imageFile) return "A kép feltöltése kötelező.";
+  
     const zip = Number.parseInt(form.iranyitoszam, 10);
-    if (!Number.isInteger(zip) || zip < 1000 || zip > 9999) return "Érvénytelen irányítószám.";
-    if (form.leiras && form.leiras.length > 2000) return "A leírás max. 2000 karakter.";
- 
-    if (imageFile) {
-      const allowed = ["image/png", "image/jpeg", "image/webp"];
-      if (!allowed.includes(imageFile.type)) return "Csak PNG/JPG/WEBP képfájl tölthető fel.";
-      if (imageFile.size > 5 * 1024 * 1024) return "A kép max. 5MB lehet.";
-    }
- 
+    if (!Number.isInteger(zip) || zip < 1000 || zip > 9999)
+      return "Érvénytelen irányítószám.";
+  
+    if (form.leiras && form.leiras.length > 2000)
+      return "A leírás max. 2000 karakter.";
+  
+
+  
+    const allowed = ["image/png", "image/jpeg", "image/webp"];
+    if (!allowed.includes(imageFile.type))
+      return "Csak PNG/JPG/WEBP képfájl tölthető fel.";
+  
+    if (imageFile.size > 5 * 1024 * 1024)
+      return "A kép max. 5MB lehet.";
+  
     return null;
   };
  
@@ -270,7 +280,7 @@ const NewRestaurant = () => {
                         ))}
                       </select>
                       {selectedVarosLabel && (
-                        <div className='form-text'>Kiválasztva: {selectedVarosLabel}</div>
+                        <div className='form-text feher'>Kiválasztva: {selectedVarosLabel}</div>
                       )}
                     </div>
                     <div className='mb-3'>
@@ -319,7 +329,7 @@ const NewRestaurant = () => {
  
                   <div className='col-md-6'>
                     <div className='mb-3'>
-                      <label className='form-label' htmlFor='leiras'>Leírás</label>
+                      <label className='form-label' htmlFor='leiras'>Leírás *</label>
                       <textarea
                         id='leiras'
                         name='leiras'
@@ -328,13 +338,13 @@ const NewRestaurant = () => {
                         value={form.leiras}
                         onChange={onChange}
                         maxLength={2000}
-                        placeholder='(opcionális)'
+                        placeholder='Rövid leírás az étteremről (max. 2000 karakter)'
                       />
-                      <div className='form-text'>{form.leiras.length} / 2000</div>
+                      <div className='form-text feher'>{form.leiras.length} / 2000</div>
                     </div>
  
                     <div className='mb-3'>
-                      <label className='form-label' htmlFor='image'>Kép feltöltése</label>
+                      <label className='form-label' htmlFor='image'>Kép feltöltése *</label>
                       <input
                         id='image'
                         name='image'
@@ -348,9 +358,9 @@ const NewRestaurant = () => {
                           setImageError(null);
                         }}
                       />
-                      <div className='form-text'>PNG/JPG/WEBP, max. 5MB</div>
+                      <div className='form-text feher'>PNG/JPG/WEBP, max. 5MB</div>
  
-                      {imageError && <div className='text-danger mt-2'>{imageError}</div>}
+                      {imageError && <div className='feher mt-2'>{imageError}</div>}
  
                       {(imagePreviewUrl || uploadedImageUrl) && (
                         <div className='mt-3'>
@@ -389,14 +399,4 @@ const NewRestaurant = () => {
 };
  
 export default NewRestaurant;
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  

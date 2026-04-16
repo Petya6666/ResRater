@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2026. Ápr 14. 09:22
+-- Létrehozás ideje: 2026. Ápr 16. 13:07
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -351,7 +351,7 @@ ALTER TABLE `ertekelesek`
 -- AUTO_INCREMENT a táblához `ettermek`
 --
 ALTER TABLE `ettermek`
-  MODIFY `etterem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `etterem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT a táblához `felhasznalok`
@@ -369,13 +369,13 @@ ALTER TABLE `kategoriak`
 -- AUTO_INCREMENT a táblához `kedvencek`
 --
 ALTER TABLE `kedvencek`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT a táblához `kepek`
 --
 ALTER TABLE `kepek`
-  MODIFY `kep_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `kep_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT a táblához `kommentek`
@@ -412,7 +412,7 @@ ALTER TABLE `kedvencek`
 -- Megkötések a táblához `kepek`
 --
 ALTER TABLE `kepek`
-  ADD CONSTRAINT `fk_kepek_id` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`);
+  ADD CONSTRAINT `fk_kepek_id` FOREIGN KEY (`etterem_id`) REFERENCES `ettermek` (`etterem_id`) ON DELETE CASCADE;
 
 --
 -- Megkötések a táblához `kommentek`
