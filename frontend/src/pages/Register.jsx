@@ -7,7 +7,8 @@ const Register = () => {
     const [formData, setFormData] = useState({
         felhasznev: '',
         email: '',
-        jelszo: ''
+        jelszo: '',
+        jelszoUjra: '' // New field for password confirmation
     });
 
     const handleChange = (e) => {
@@ -19,8 +20,17 @@ const Register = () => {
     };
 
     const handleSubmit = async () => {
+        if (formData.jelszo !== formData.jelszoUjra) {
+            alert('A jelszavak nem egyeznek!');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:3000/register', formData, {
+            const response = await axios.post('http://localhost:3000/register', {
+                felhasznev: formData.felhasznev,
+                email: formData.email,
+                jelszo: formData.jelszo
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -29,7 +39,7 @@ const Register = () => {
             if (response.status === 201) {
                 alert(response.data.message);
                 // clear all inputs on success
-                setFormData({ felhasznev: '', email: '', jelszo: '' });
+                setFormData({ felhasznev: '', email: '', jelszo: '', jelszoUjra: '' });
             } else {
                 alert(response.data.error || 'Hiba történt a regisztráció során.');
             }
@@ -49,12 +59,12 @@ const Register = () => {
                         <div key={key}>
                             <input
                                 className="input-field"
-                                type={key === 'email' ? 'email' : key === 'jelszo' ? 'password' : 'text'}
+                                type={key === 'email' ? 'email' : key.includes('jelszo') ? 'password' : 'text'}
                                 id={key}
                                 name={key}
                                 value={formData[key]}
                                 onChange={handleChange}
-                                placeholder={key === 'felhasznev' ? 'Felhasználó név' : key === 'email' ? 'E-mail' : key === 'jelszo' ? 'Jelszó' : key}
+                                placeholder={key === 'felhasznev' ? 'Felhasználó név' : key === 'email' ? 'E-mail' : key === 'jelszo' ? 'Jelszó' : key === 'jelszoUjra' ? 'Jelszó újra' : key}
                                 required
                             />
                         </div>

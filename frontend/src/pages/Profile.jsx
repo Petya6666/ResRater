@@ -86,6 +86,13 @@ function Profile(){
             alert(data.message || 'Jelszó sikeresen módosítva.');
             setRegiJelszo('');
             setUjJelszo('');
+
+            // Log out the user after password change
+            localStorage.removeItem('userId');
+            localStorage.removeItem('token');
+            localStorage.removeItem('felhasznev');
+            alert('A jelszó módosítása után kijelentkeztél. Kérlek, jelentkezz be újra.');
+            window.location.href = '/login';
         } catch (err) {
             console.error(err);
             alert('Szerver hiba történt.');
@@ -115,7 +122,6 @@ function Profile(){
                     Mentés
                 </button>
            
-
             
                 <h2>Jelszó módosítása</h2>
                 <input

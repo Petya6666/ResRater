@@ -3,12 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import "../styles/index.css";
-
+ 
 const API_BASE = "http://localhost:3000";
-
+ 
 const NewRestaurant = () => {
   const navigate = useNavigate();
-
+ 
   const [form, setForm] = useState({
     nev: "",
     telefon: "",
@@ -18,29 +18,29 @@ const NewRestaurant = () => {
     hazszam: "",
     kategoria_id: ""
   });
-
+ 
   const [varosok, setVarosok] = useState([]);
   const [kategoriak, setKategoriak] = useState([]);
-
+ 
   // image upload
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [uploadedImagePath, setUploadedImagePath] = useState(null); // e.g. 'kepek/xxx.png'
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState(null);
-
+ 
   const [loadingLists, setLoadingLists] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
+ 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
     }
-
+ 
     const loadLists = async () => {
       setLoadingLists(true);
       setError(null);
@@ -58,33 +58,33 @@ const NewRestaurant = () => {
         setLoadingLists(false);
       }
     };
-
+ 
     loadLists();
   }, [navigate]);
-
+ 
   useEffect(() => {
     if (!imageFile) {
       setImagePreviewUrl(null);
       return;
     }
-
+ 
     const url = URL.createObjectURL(imageFile);
     setImagePreviewUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [imageFile]);
-
+ 
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
+ 
   const selectedVarosLabel = useMemo(() => {
     const zip = Number.parseInt(form.iranyitoszam, 10);
     if (!Number.isInteger(zip)) return null;
     const found = varosok.find((v) => Number(v.iranyitoszam) === zip);
     return found ? `${found.varos} (${found.iranyitoszam})` : null;
   }, [form.iranyitoszam, varosok]);
-
+ 
   const validate = () => {
     if (!form.nev.trim()) return "A név kötelező.";
     if (!form.telefon.trim()) return "A telefonszám kötelező.";
@@ -92,43 +92,43 @@ const NewRestaurant = () => {
     const zip = Number.parseInt(form.iranyitoszam, 10);
     if (!Number.isInteger(zip) || zip < 1000 || zip > 9999) return "Érvénytelen irányítószám.";
     if (form.leiras && form.leiras.length > 2000) return "A leírás max. 2000 karakter.";
-
+ 
     if (imageFile) {
       const allowed = ["image/png", "image/jpeg", "image/webp"];
       if (!allowed.includes(imageFile.type)) return "Csak PNG/JPG/WEBP képfájl tölthető fel.";
       if (imageFile.size > 5 * 1024 * 1024) return "A kép max. 5MB lehet.";
     }
-
+ 
     return null;
   };
-
+ 
   const uploadImageIfNeeded = async () => {
     if (!imageFile) return null;
     if (uploadedImagePath) return uploadedImagePath;
-
+ 
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return null;
     }
-
+ 
     setImageUploading(true);
     setImageError(null);
-
+ 
     try {
       const fd = new FormData();
       fd.append("image", imageFile);
-
+ 
       const res = await axios.post(`${API_BASE}/kepek/upload`, fd, {
         headers: {
           Authorization: `Bearer ${token}`
           // do not set Content-Type; browser will set multipart boundary
         }
       });
-
+ 
       const pathFromServer = res?.data?.fajl_nev;
       if (!pathFromServer) throw new Error("Nincs fajl_nev a válaszban.");
-
+ 
       setUploadedImagePath(pathFromServer);
       return pathFromServer;
     } catch (e) {
@@ -140,34 +140,34 @@ const NewRestaurant = () => {
       setImageUploading(false);
     }
   };
-
+ 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
+ 
     const validationError = validate();
     if (validationError) {
       setError(validationError);
       return;
     }
-
+ 
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
     }
-
+ 
     try {
       setSubmitLoading(true);
-
+ 
       // 1) upload image first (optional)
       const kepFajlNev = await uploadImageIfNeeded();
       if (imageFile && !kepFajlNev) {
         setError("A kép feltöltése nem sikerült. Próbáld újra.");
         return;
       }
-
+ 
       // 2) create restaurant
       const payload = {
         nev: form.nev.trim(),
@@ -179,47 +179,47 @@ const NewRestaurant = () => {
         kategoria_id: form.kategoria_id ? Number.parseInt(form.kategoria_id, 10) : null,
         kepFajlNev
       };
-
+ 
       const res = await axios.post(`${API_BASE}/ettermek`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         }
       });
-
+ 
       setSuccess(res?.data?.message ?? "Étterem létrehozva.");
-
+ 
       const newId = res?.data?.etterem_id;
       if (newId) navigate(`/restaurant/${newId}`);
     } catch (err) {
       console.error("Hiba az étterem létrehozása során:", err);
-
+ 
       if (err?.response?.status === 401 || err?.response?.status === 403) {
         localStorage.removeItem("token");
         setError("A bejelentkezés lejárt vagy érvénytelen. Jelentkezz be újra.");
         navigate("/login");
         return;
       }
-
+ 
       const msg = err?.response?.data?.error || "Nem sikerült létrehozni az éttermet.";
       setError(msg);
     } finally {
       setSubmitLoading(false);
     }
   };
-
+ 
   const uploadedImageUrl = uploadedImagePath ? `${API_BASE}/${uploadedImagePath}` : null;
-
+ 
   return (
     <>
       <Header />
       <div className='page-shell mt-4'>
         <div className='page-content' style={{ maxWidth: "900px" }}>
           <button className='piros mb-3 ' onClick={() => navigate("/restaurants")}>← Vissza</button>
-
+ 
           <div className='doboz'>
             <h2 className='mb-3'>Új étterem hozzáadása</h2>
-
+ 
             {loadingLists ? (
               <p>Betöltés...</p>
             ) : (
@@ -238,7 +238,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
-
+ 
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='telefon'>Telefonszám *</label>
                       <input
@@ -251,7 +251,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
-
+ 
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='iranyitoszam'>Város (irányítószám) *</label>
                       <select
@@ -297,7 +297,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
-
+ 
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='kategoria_id'>Kategória</label>
                       <select
@@ -316,7 +316,7 @@ const NewRestaurant = () => {
                       </select>
                     </div>
                   </div>
-
+ 
                   <div className='col-md-6'>
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='leiras'>Leírás</label>
@@ -332,7 +332,7 @@ const NewRestaurant = () => {
                       />
                       <div className='form-text'>{form.leiras.length} / 2000</div>
                     </div>
-
+ 
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='image'>Kép feltöltése</label>
                       <input
@@ -349,9 +349,9 @@ const NewRestaurant = () => {
                         }}
                       />
                       <div className='form-text'>PNG/JPG/WEBP, max. 5MB</div>
-
+ 
                       {imageError && <div className='text-danger mt-2'>{imageError}</div>}
-
+ 
                       {(imagePreviewUrl || uploadedImageUrl) && (
                         <div className='mt-3'>
                           <div className='mb-2'>Előnézet:</div>
@@ -363,15 +363,15 @@ const NewRestaurant = () => {
                           />
                         </div>
                       )}
-
+ 
                       {imageUploading && <div className='mt-2'>Kép feltöltése...</div>}
                     </div>
                   </div>
                 </div>
-
+ 
                 {error && <div className='alert alert-danger'>{error}</div>}
                 {success && <div className='alert alert-success'>{success}</div>}
-
+ 
                 <button
                   className='submit-gomb'
                   type='submit'
@@ -387,14 +387,16 @@ const NewRestaurant = () => {
     </>
   );
 };
-
+ 
 export default NewRestaurant;
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
