@@ -120,7 +120,25 @@ const Header = () => {
                         <Nav.Link as={Link} className='colors' to='/' onClick={closeMenus}>Kezdőlap</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/restaurants' onClick={closeMenus}>Éttermek</Nav.Link>
                         <Nav.Link as={Link} className='colors' to='/new-restaurant' onClick={closeMenus}>Étterem regisztrálása</Nav.Link>                 
-                        </Nav>
+                    </Nav>
+
+                    <div className='mobile-profile-menu'>
+                        {token ? (
+                            <>
+                                <Link to='/profile' className='profile-dropdown-item mobile-profile-item' onClick={closeMenus}>Profil</Link>
+                                <Link to='/favorites' className='profile-dropdown-item mobile-profile-item' onClick={closeMenus}>Kedvenceim</Link>
+                                {isAdmin && (
+                                    <button onClick={handleDownloadAdminApp} className='profile-dropdown-item mobile-profile-item' type='button'>Admin App Letöltése</button>
+                                )}
+                                <button onClick={handleLogout} className='profile-dropdown-item mobile-profile-item' type='button'>Kijelentkezés</button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to='/register' className='profile-dropdown-item mobile-profile-item' onClick={closeMenus}>Regisztráció</Link>
+                                <Link to='/login' className='profile-dropdown-item mobile-profile-item' onClick={closeMenus}>Bejelentkezés</Link>
+                            </>
+                        )}
+                    </div>
 
                     <div className='user-menu-wrapper' ref={dropdownRef}>
                         <button type='button' className='profile-trigger' onClick={toggleDropdown} aria-label='Felhasználói menü'>

@@ -42,7 +42,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'resrater_db',
-    port: 3306
+    port: 3307
 });
 
 
@@ -666,7 +666,20 @@ app.get('/ettermek/filters/kategoriak', (req, res) => {
 // Éttermek listázása szűrőkkel
 // GET /ettermek?q=&kategoria_id=&min_atlag=&max_atlag=
 app.get('/ettermek', (req, res) => {
+    let responded = false;
+    const sendJson = (status, payload) => {
+        if (responded || res.headersSent) return;
+        responded = true;
+        return res.status(status).json(payload);
+    };
+
     const q = (req.query.q ?? '').toString().trim();
+
+    const pageRaw = (req.query.page ?? '').toString().trim();
+    const limitRaw = (req.query.limit ?? '').toString().trim();
+    const page = pageRaw.length ? Number.parseInt(pageRaw, 10) : null;
+    const limit = limitRaw.length ? Number.parseInt(limitRaw, 10) : null;
+    const usePagination = page !== null || limit !== null;
 
     const katRaw = (req.query.kategoria_id ?? '').toString().trim();
     const kategoriaId = katRaw.length ? Number.parseInt(katRaw, 10) : null;
@@ -677,13 +690,19 @@ app.get('/ettermek', (req, res) => {
     const maxAtlag = maxRaw.length ? Number.parseFloat(maxRaw) : null;
 
     if (kategoriaId !== null && !Number.isInteger(kategoriaId)) {
-        return res.status(400).json({ error: 'Érvénytelen kategoria_id.' });
+        return sendJson(400, { error: 'Érvénytelen kategoria_id.' });
     }
     if (minAtlag !== null && (Number.isNaN(minAtlag) || minAtlag < 0 || minAtlag > 5)) {
-        return res.status(400).json({ error: 'Érvénytelen min_atlag (0-5).' });
+        return sendJson(400, { error: 'Érvénytelen min_atlag (0-5).' });
     }
     if (maxAtlag !== null && (Number.isNaN(maxAtlag) || maxAtlag < 0 || maxAtlag > 5)) {
-        return res.status(400).json({ error: 'Érvénytelen max_atlag (0-5).' });
+        return sendJson(400, { error: 'Érvénytelen max_atlag (0-5).' });
+    }
+    if (usePagination && (!Number.isInteger(page) || page < 1)) {
+        return sendJson(400, { error: 'Érvénytelen page (min. 1).' });
+    }
+    if (usePagination && (!Number.isInteger(limit) || limit < 1 || limit > 100)) {
+        return sendJson(400, { error: 'Érvénytelen limit (1-100).' });
     }
 
     const baseSql = `
@@ -732,20 +751,60 @@ app.get('/ettermek', (req, res) => {
 
     const havingSql = having.length ? `HAVING ${having.join(' AND ')}` : '';
 
-    const sql = `
+    const groupedSql = `
         ${baseSql}
         ${whereSql}
         GROUP BY e.etterem_id, e.nev, e.iranyitoszam, v.varos, e.kategoria_id, ka.kategoria_nev
         ${havingSql}
+    `;
+
+    const sql = `
+        ${groupedSql}
         ORDER BY e.nev ASC
     `;
 
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: err.message });
+    if (!usePagination) {
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+                return sendJson(500, { error: err.message });
+            }
+            return sendJson(200, result);
+        });
+        return;
+    }
+
+    const safePage = page;
+    const safeLimit = limit;
+    const offset = (safePage - 1) * safeLimit;
+    const pagedSql = `${sql} LIMIT ${safeLimit} OFFSET ${offset}`;
+    const countSql = `SELECT COUNT(*) AS total FROM (${groupedSql}) AS filtered_ettermek`;
+
+    db.query(countSql, params, (countErr, countRows) => {
+        if (countErr) {
+            console.error('Database error:', countErr);
+            return sendJson(500, { error: countErr.message });
         }
-        return res.json(result);
+
+        const total = Number(countRows?.[0]?.total ?? 0);
+        const totalPages = total > 0 ? Math.ceil(total / safeLimit) : 0;
+
+        db.query(pagedSql, params, (err, rows) => {
+            if (err) {
+                console.error('Database error:', err);
+                return sendJson(500, { error: err.message });
+            }
+
+            return sendJson(200, {
+                data: rows,
+                page: safePage,
+                limit: safeLimit,
+                total,
+                totalPages,
+                hasNextPage: safePage < totalPages,
+                hasPrevPage: safePage > 1
+            });
+        });
     });
 });
 

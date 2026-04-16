@@ -9,6 +9,7 @@ import Profile from './pages/Profile.jsx';
 import NewRestaurant from './pages/NewRestaurant.jsx';
 import Favourites from './pages/Favourites.jsx';
 import FloatingLines from './pages/FloatingLines.jsx';
+import Footer from './components/Footer.jsx';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -32,18 +33,23 @@ function App() {
         />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh' }}>
+      <div style={{ position: 'relative', zIndex: 1 }}>
         <Router>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/restaurants" element={<Restaurants />} />
-            <Route path="/new-restaurant" element={<NewRestaurant />} />
-            <Route path="/restaurant/:id" element={<Restaurant />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/favorites" element={<Favourites />} />
-          </Routes>
+          <div className='app-shell'>
+            <main className='app-content'>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/restaurants" element={<Restaurants />} />
+                <Route path="/new-restaurant" element={<NewRestaurant />} />
+                <Route path="/restaurant/:id" element={<Restaurant />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/favorites" element={<Favourites />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
         </Router>
       </div>
     </>

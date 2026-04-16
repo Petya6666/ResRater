@@ -40,6 +40,11 @@
     cursor: pointer;
     font-family: 'Dela Gothic One', sans-serif;
 }
+
+.bejelentkezes-gomb:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
 .input-field {
     width: min(560px, 100%);
     padding: 10px;

@@ -26,9 +26,13 @@ const Favourites = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        const favoriteIds = (favoriteRes.data || []).map(f => f.etterem_id);
+        const favoriteIds = new Set(
+          (Array.isArray(favoriteRes.data) ? favoriteRes.data : [])
+            .map((f) => Number(f.etterem_id))
+            .filter((id) => Number.isInteger(id))
+        );
 
-        if (favoriteIds.length === 0) {
+        if (favoriteIds.size === 0) {
           setKedvencek([]);
           setLoading(false);
           return;
@@ -36,10 +40,13 @@ const Favourites = () => {
 
         // Fetch all restaurants and filter to favorites
         const allRes = await axios.get('http://localhost:3000/ettermek');
-        const allRestaurants = Array.isArray(allRes.data) ? allRes.data : [];
+        const allPayload = allRes.data;
+        const allRestaurants = Array.isArray(allPayload)
+          ? allPayload
+          : (Array.isArray(allPayload?.data) ? allPayload.data : []);
 
         const filteredData = allRestaurants
-          .filter(r => favoriteIds.includes(r.etterem_id))
+          .filter((r) => favoriteIds.has(Number(r.etterem_id)))
           .map(etterem => ({
             ...etterem,
             url: typeof etterem.fajl_nev === 'string' && etterem.fajl_nev.startsWith('kepek/')
@@ -87,8 +94,8 @@ const Favourites = () => {
           <h2 className='mb-0 feher'>Kedvenceim</h2>
         </div>
 
-        {loading && <p>Betöltés...</p>}
-        {!loading && kedvencek.length === 0 && <p>Nincs kedvenc ekkor még.</p>}
+        {loading && <p className='feher'>Betöltés...</p>}
+        {!loading && kedvencek.length === 0 && <p className='feher'>Nincs kedvenc éttermed.</p>}
 
         <div className='row'>
           {kedvencek.map((etterem) => (

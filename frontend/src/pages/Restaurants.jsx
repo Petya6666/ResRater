@@ -5,6 +5,15 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/index.css';
 
+const DEFAULT_PAGE_SIZE = 9;
+const MOBILE_PAGE_SIZE = 8;
+const MOBILE_BREAKPOINT = 767.98;
+
+const getPageSize = () => {
+  if (typeof window === 'undefined') return DEFAULT_PAGE_SIZE;
+  return window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_PAGE_SIZE : DEFAULT_PAGE_SIZE;
+};
+
 const Restaurants = () => {
  const [ettermek,setettermek]=useState([]);
  const [query, setQuery] = useState('');
@@ -16,7 +25,20 @@ const Restaurants = () => {
   min_atlag: '',
   max_atlag: ''
  });
+ const [pageSize, setPageSize] = useState(getPageSize);
+ const [currentPage, setCurrentPage] = useState(1);
+ const [totalPages, setTotalPages] = useState(0);
  const navigate = useNavigate();
+
+ useEffect(() => {
+  const handleResize = () => {
+    const nextPageSize = getPageSize();
+    setPageSize((prev) => (prev === nextPageSize ? prev : nextPageSize));
+  };
+
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+ }, []);
 
  useEffect(() => {
   const fetchKategoriak = async () => {
@@ -31,6 +53,10 @@ const Restaurants = () => {
  }, []);
 
  useEffect(() => {
+  setCurrentPage(1);
+ }, [query, filters.kategoria_id, filters.min_atlag, filters.max_atlag, pageSize]);
+
+ useEffect(() => {
   const fetchEttermek = async () => {
     setLoading(true);
     try {
@@ -39,10 +65,15 @@ const Restaurants = () => {
       if (filters.kategoria_id) params.kategoria_id = filters.kategoria_id;
       if (filters.min_atlag) params.min_atlag = filters.min_atlag;
       if (filters.max_atlag) params.max_atlag = filters.max_atlag;
+      params.page = currentPage;
+      params.limit = pageSize;
 
       const result = await axios.get('http://localhost:3000/ettermek', { params });
 
-      const updatedData = (Array.isArray(result.data) ? result.data : []).map(etterem => ({
+      const payload = result.data;
+      const rawEttermek = Array.isArray(payload) ? payload : (Array.isArray(payload?.data) ? payload.data : []);
+
+      const updatedData = rawEttermek.map(etterem => ({
         ...etterem,
         url: typeof etterem.fajl_nev === 'string' && etterem.fajl_nev.startsWith('kepek/')
           ? `http://localhost:3000/${etterem.fajl_nev}`
@@ -50,8 +81,11 @@ const Restaurants = () => {
       }));
 
       setettermek(updatedData);
+      setTotalPages(Number.isInteger(payload?.totalPages) ? payload.totalPages : (updatedData.length > 0 ? 1 : 0));
     } catch (error) {
       console.error('Hiba az éttermek lekérése során:', error);
+      setettermek([]);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
@@ -59,7 +93,7 @@ const Restaurants = () => {
 
   const t = setTimeout(fetchEttermek, 300); 
   return () => clearTimeout(t);
-}, [query, filters.kategoria_id, filters.min_atlag, filters.max_atlag]);
+}, [query, filters.kategoria_id, filters.min_atlag, filters.max_atlag, currentPage, pageSize]);
 
   const handleCardClick = (etterem) => {
     console.log('Clicked restaurant:', etterem); 
@@ -147,8 +181,8 @@ const Restaurants = () => {
           </div>
         </div>
 
-        {loading && <p>Keresés...</p>}
-        {!loading && ettermek.length === 0 && <p>Nincsenek éttermek...</p>}
+        {loading && <p className='feher'>Keresés...</p>}
+        {!loading && ettermek.length === 0 && <p className='feher'>Nincsenek éttermek...</p>}
 
         <div className='row'>
           {ettermek.map((etterem) => (
@@ -171,6 +205,28 @@ const Restaurants = () => {
             </div>
           ))}
         </div>
+
+        {!loading && totalPages > 1 && (
+          <div className='d-flex justify-content-center align-items-center gap-3 mt-2 mb-4'>
+            <button
+              type='button'
+              className='bejelentkezes-gomb'
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Előző oldal
+            </button>
+            <span className='feher'>Oldal: {currentPage} / {totalPages}</span>
+            <button
+              type='button'
+              className='bejelentkezes-gomb'
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+            >
+              Következő oldal
+            </button>
+          </div>
+        )}
       </div>
     </>
   )

@@ -42,6 +42,22 @@
     text-decoration: none;
 }
 
+.navbar-custom .navbar-toggler {
+    border-color: transparent;
+}
+
+.navbar-custom .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-custom .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.mobile-profile-menu {
+    display: none;
+}
+
 .user-menu-wrapper {
     position: relative;
     margin-left: auto;
@@ -99,23 +115,41 @@
 @media (max-width: 991.98px) {
     .navbar-links {
         margin-top: 0.6rem;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.35rem;
         align-items: flex-start;
     }
 
-    .user-menu-wrapper {
-        margin-left: 0;
+    .mobile-profile-menu {
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        margin-top: 0.2rem;
+        margin-bottom: 0.6rem;
+        background: transparent;
+        border: 0;
+        border-top: 1px solid #ffffff;
+        padding-top: 0.35rem;
     }
 
-    .profile-trigger {
-        justify-content: flex-start;
+    .mobile-profile-item {
+        width: 100%;
+        color: white;
+        font-family: 'Dela Gothic One', sans-serif;
+        font-size: 1rem;
+        padding: 0.5rem 0.8rem;
+        text-decoration: none;
+        background: transparent;
+        border: 0;
     }
 
-    .profile-dropdown-menu {
-        position: static;
-        width: min(320px, 100%);
-        margin-top: 0.35rem;
+    .mobile-profile-item:hover,
+    .mobile-profile-item:focus {
+        color: rgb(194, 0, 32);
+        text-decoration: none;
+    }
+
+    .user-menu-wrapper {
+        display: none;
     }
 }
 
