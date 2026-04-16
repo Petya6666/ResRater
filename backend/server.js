@@ -42,7 +42,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'resrater_db',
-    port: 3307
+    port: 3306
 });
 
 
@@ -703,7 +703,7 @@ app.get('/ettermek', (req, res) => {
         LEFT JOIN kategoriak ka ON e.kategoria_id = ka.kategoria_id
     `;
 
-    const where = [];
+    const where = ['e.jovahagyott = 1'];
     const params = [];
 
     if (q.length > 0) {

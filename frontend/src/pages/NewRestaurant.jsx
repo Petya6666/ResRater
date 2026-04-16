@@ -219,6 +219,7 @@ const NewRestaurant = () => {
   };
  
   const uploadedImageUrl = uploadedImagePath ? `${API_BASE}/${uploadedImagePath}` : null;
+  const hasImagePreview = Boolean(imagePreviewUrl || uploadedImageUrl);
  
   return (
     <>
@@ -248,7 +249,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
- 
+
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='telefon'>Telefonszám *</label>
                       <input
@@ -261,7 +262,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
- 
+
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='iranyitoszam'>Város (irányítószám) *</label>
                       <select
@@ -283,6 +284,7 @@ const NewRestaurant = () => {
                         <div className='form-text feher'>Kiválasztva: {selectedVarosLabel}</div>
                       )}
                     </div>
+
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='utca'>Utca *</label>
                       <input
@@ -295,6 +297,7 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
+
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='hazszam'>Házszám *</label>
                       <input
@@ -307,27 +310,49 @@ const NewRestaurant = () => {
                         required
                       />
                     </div>
- 
-                    <div className='mb-3'>
-                      <label className='form-label' htmlFor='kategoria_id'>Kategória</label>
-                      <select
-                        id='kategoria_id'
-                        name='kategoria_id'
-                        className='form-select'
-                        value={form.kategoria_id}
-                        onChange={onChange}
-                      >
-                        <option value=''>—</option>
-                        {kategoriak.map((k) => (
-                          <option key={k.kategoria_id} value={k.kategoria_id}>
-                            {k.kategoria_nev}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+
+                    {hasImagePreview && (
+                      <div className='mb-3'>
+                        <label className='form-label' htmlFor='kategoria_id'>Kategória</label>
+                        <select
+                          id='kategoria_id'
+                          name='kategoria_id'
+                          className='form-select'
+                          value={form.kategoria_id}
+                          onChange={onChange}
+                        >
+                          <option value=''>—</option>
+                          {kategoriak.map((k) => (
+                            <option key={k.kategoria_id} value={k.kategoria_id}>
+                              {k.kategoria_nev}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
- 
+
                   <div className='col-md-6'>
+                    {!hasImagePreview && (
+                      <div className='mb-3'>
+                        <label className='form-label' htmlFor='kategoria_id'>Kategória</label>
+                        <select
+                          id='kategoria_id'
+                          name='kategoria_id'
+                          className='form-select'
+                          value={form.kategoria_id}
+                          onChange={onChange}
+                        >
+                          <option value=''>—</option>
+                          {kategoriak.map((k) => (
+                            <option key={k.kategoria_id} value={k.kategoria_id}>
+                              {k.kategoria_nev}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
                     <div className='mb-3'>
                       <label className='form-label' htmlFor='leiras'>Leírás *</label>
                       <textarea
@@ -362,7 +387,7 @@ const NewRestaurant = () => {
  
                       {imageError && <div className='feher mt-2'>{imageError}</div>}
  
-                      {(imagePreviewUrl || uploadedImageUrl) && (
+                      {hasImagePreview && (
                         <div className='mt-3'>
                           <div className='mb-2'>Előnézet:</div>
                           <img

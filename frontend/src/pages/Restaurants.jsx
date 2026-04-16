@@ -154,7 +154,7 @@ const Restaurants = () => {
           {ettermek.map((etterem) => (
             <div key={etterem.etterem_id} className='col-12 col-sm-6 col-lg-4 mb-4'>
               <div 
-                className='card h-100' 
+                className='card h-100 restaurants-card' 
                 onClick={() => handleCardClick(etterem)}
                 style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}

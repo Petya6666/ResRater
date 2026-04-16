@@ -134,6 +134,9 @@ h2 {
     padding: 10px 40px;
     border-radius: 5px;
     cursor: pointer;
+    display: block;
+    margin: 20px auto 0;
+    
     font-family: 'Dela Gothic One', sans-serif;
 }
 .feher {
@@ -297,9 +300,9 @@ button.restaurants-filterbtn.active,
 
 /* Restaurants page: scale an inner wrapper so rounded corners stay even */
 .restaurants-card {
-    background-color: transparent;
-    border-radius: 10px;
-    overflow: visible; /* let scaled inner content extend */
+    background-color: #370b0b;
+    border-radius: 18px;
+    overflow: hidden;
 }
 
 .restaurants-card-inner {
@@ -309,17 +312,22 @@ button.restaurants-filterbtn.active,
     overflow: hidden; /* clip image to rounded corners */
     transform: translateZ(0);
     will-change: transform;
+    transition: transform 0.2s ease;
+}
+
+.restaurants-card:hover .restaurants-card-inner {
+    transform: scale(1.05);
 }
 
 .restaurants-card .card-img-top {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .restaurants-card .card-body {
     background-color: #370b0b;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 @media (max-width: 480px) {
