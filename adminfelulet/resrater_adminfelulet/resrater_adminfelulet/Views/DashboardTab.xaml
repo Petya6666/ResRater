@@ -16,7 +16,7 @@
 
         <!-- Page title -->
         <TextBlock Grid.Row="0"
-                   Text="Dashboard - Statistics"
+                   Text="Irányítópult - Statisztikák"
                    FontSize="20"
                    FontWeight="Bold"
                    Margin="0,0,0,20"/>
@@ -27,7 +27,7 @@
             <!-- Total Users card -->
             <Border Width="180" Height="110" Background="#FFDC0000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Total Users"
+                    <TextBlock Text="Összes felhasználó"
                                Foreground="White" FontSize="14"
                                HorizontalAlignment="Center"/>
                     <TextBlock x:Name="txtTotalUsers"
@@ -40,7 +40,7 @@
             <!-- Total Restaurants card -->
             <Border Width="180" Height="110" Background="#FFB50000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Total Restaurants"
+                    <TextBlock Text="Összes étterem"
                                Foreground="White" FontSize="14"
                                HorizontalAlignment="Center"/>
                     <TextBlock x:Name="txtTotalRestaurants"
@@ -53,7 +53,7 @@
             <!-- Total Ratings card -->
             <Border Width="180" Height="110" Background="#FF8A0D00" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Total Ratings"
+                    <TextBlock Text="Összes értékelés"
                                Foreground="White" FontSize="14"
                                HorizontalAlignment="Center"/>
                     <TextBlock x:Name="txtTotalRatings"
@@ -66,7 +66,7 @@
             <!-- Total Comments card -->
             <Border Width="180" Height="110" Background="#FF620000" CornerRadius="8" Margin="10">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Total Comments"
+                    <TextBlock Text="Összes komment"
                                Foreground="White" FontSize="14"
                                HorizontalAlignment="Center"/>
                     <TextBlock x:Name="txtTotalComments"

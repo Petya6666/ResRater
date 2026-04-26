@@ -18,11 +18,11 @@
 
         <!-- Search bar and Refresh button -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Search by username:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <TextBlock Text="Keresés felhasználónév szerint:" VerticalAlignment="Center" Margin="0,0,8,0"/>
             <TextBox x:Name="txtSearch"
                      Width="200" Height="28"
                      TextChanged="txtSearch_TextChanged"/>
-            <Button Content="Refresh"
+            <Button Content="Frissítés"
                     Width="80" Height="28" Margin="10,0,0,0"
                     Click="btnRefresh_Click"/>
         </StackPanel>
@@ -38,17 +38,17 @@
                   GridLinesVisibility="Horizontal"
                   Margin="0,0,0,10">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="User ID"           Binding="{Binding UserId}"           Width="80"/>
-                <DataGridTextColumn Header="Username"          Binding="{Binding Username}"          Width="160"/>
+                <DataGridTextColumn Header="Felhasználó ID"    Binding="{Binding UserId}"           Width="80"/>
+                <DataGridTextColumn Header="Felhasználónév"    Binding="{Binding Username}"          Width="160"/>
                 <DataGridTextColumn Header="Email"             Binding="{Binding Email}"             Width="220"/>
-                <DataGridTextColumn Header="Registration Date" Binding="{Binding RegistrationDate}"  Width="160"/>
-                <DataGridTextColumn Header="Role"              Binding="{Binding Role}"              Width="120"/>
+                <DataGridTextColumn Header="Regisztráció dátuma" Binding="{Binding RegistrationDate}"  Width="160"/>
+                <DataGridTextColumn Header="Szerepkör"         Binding="{Binding Role}"              Width="120"/>
             </DataGrid.Columns>
         </DataGrid>
 
         <!-- Action buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button Content="Delete User"
+            <Button Content="Felhasználó törlése"
                     Width="110" Height="30"
                     Background="#E74C3C" Foreground="White"
                     Click="btnDeleteUser_Click"/>
