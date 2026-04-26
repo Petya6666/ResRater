@@ -44,7 +44,7 @@
                 <DataGridTextColumn Header="ID"            Binding="{Binding RestaurantId}" Width="60"/>
                 <DataGridTextColumn Header="Név"          Binding="{Binding Name}"         Width="180"/>
                 <DataGridTextColumn Header="Telefon"      Binding="{Binding Phone}"        Width="130"/>
-                <DataGridTextColumn Header="Kategória"    Binding="{Binding CategoryId}"   Width="90"/>
+                <DataGridTextColumn Header="Kategória ID"    Binding="{Binding CategoryId}"   Width="90"/>
                 <DataGridTextColumn Header="Irányítószám" Binding="{Binding PostalCode}"   Width="100"/>
                 <DataGridTextColumn Header="Jóváhagyott"  Binding="{Binding IsApprovedText}" Width="90"/>
             </DataGrid.Columns>
